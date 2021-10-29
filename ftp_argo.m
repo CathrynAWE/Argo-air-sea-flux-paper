@@ -6,7 +6,7 @@ ftpobj = ftp('ftp.ifremer.fr');
 %ftpobj = ftp('ftp.usgodae.org');
 
 % go to the folder with all the float files
-cd(ftpobj,'ifremer/argo/dac/csiro/5906624');
+cd(ftpobj,'ifremer/argo/dac/csiro/5906623');
 %cd(ftpobj,'ifremer/argo/dac/csiro/5906636');
 %cd(ftpobj,'ifremer/argo/dac/aoml/5905995');
 %cd(ftpobj,'usgodae/argo/dac/csiro/7900907'); %%?

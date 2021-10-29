@@ -3,7 +3,7 @@
 % float IDs, choose one: 5906623 (SOTS), 5906624 (55S)
 clear all
 
-float_ID = '5906623'
+float_ID = '5906624'
 addpath 'C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts'
 addpath 'C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\seawater_ver3_0\seawater_ver3_0'
 search_path = ['C:\Users\cawynn\cloudstor\Air sea flux manuscript\BGC_Argo\' float_ID];
@@ -16,7 +16,7 @@ file = [nc_files.folder '\' nc_files.name]
 
 lat = ncread(file,'LATITUDE');
 lon = ncread(file,'LONGITUDE');
-time_float = ncread(file,'JULD');%+ datetime(1950,1,1);
+time_float = ncread(file,'JULD')+ datetime(1950,1,1);
 pres = ncread(file,'PRES');
 temp = ncread(file, 'TEMP_ADJUSTED');
 oxy = ncread(file,'DOXY_ADJUSTED');

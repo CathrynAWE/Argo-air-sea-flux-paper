@@ -1,19 +1,22 @@
+% play with windspeed averages, like weighted averages, daily averages, etc
+
 file = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/IN2020_V08 SOLACE/IMOS_SOOP-CO2_GST_20201204T043818Z_VLMJ_FV01.nc';
 
-DfCO2 = ncread(file, 'DfCO2');
-DfCO2_QC = ncread(file, 'DfCO2_quality_control');
-u = ncread(file,'WSPD');
-lat = ncread(file, 'LATITUDE');
-pressure = ncread(file, 'Press_ATM');
-press_equil = ncread(file, 'Press_Equil');
-time = ncread(file, 'TIME') + datetime(1950,1,1);
-d = time;
-doy = day(d,'dayofyear');
-T = ncread(file,'TEMP');
-Temp_equil = ncread(file, 'TEMP_2');
-S = ncread(file,'PSAL');
-sss = S;
-sst = T;
+DfCO2_SOLACE = ncread(file, 'DfCO2');
+DfCO2_QC_SOLACE = ncread(file, 'DfCO2_quality_control');
+u_SOLACE = ncread(file,'WSPD');
+lat_SOLACE = ncread(file, 'LATITUDE');
+lon_SOLACE = ncread(file, 'LONGITUDE');
+pressure_SOLACE = ncread(file, 'Press_ATM');
+press_equil_SOLACE = ncread(file, 'Press_Equil');
+time_SOLACE = ncread(file, 'TIME') + datetime(1950,1,1);
+d_SOLACE = time_SOLACE;
+doy_SOLACE = day(d_SOLACE,'dayofyear');
+T_SOLACE = ncread(file,'TEMP');
+Temp_equil_SOLACE = ncread(file, 'TEMP_2');
+S_SOLACE = ncread(file,'PSAL');
+sss_SOLACE = S_SOLACE;
+sst_SOLACE = T_SOLACE;
 
 % % convert from mole fraction to pCO2
 % slp = press_equil./101.325;
@@ -26,11 +29,11 @@ sst = T;
 % %DpCO2 = pCO2_sw - pCO2_atm;
 
 
-[F_CO2]=FCO2_CWE(DfCO2,T,S,u);
+[F_CO2_SOLACE]=FCO2_CWE(DfCO2_SOLACE,T_SOLACE,S_SOLACE,u_SOLACE);
 
 
-fig = figure()
-scatter(time,F_CO2,[],lat,'filled')
+fig = figure();
+scatter(time_SOLACE,F_CO2_SOLACE,[],lat_SOLACE,'filled')
 c = colorbar;
 c.Label.String = 'Latitude';
 hold on
@@ -39,4 +42,9 @@ xlabel('time')
 ylabel('air-sea CO2 flux SOLACE')
 saveas(fig, 'SOLACE_UW_airseaFlux','png')
 
-
+figure()
+geoscatter(lat_SOLACE, lon_SOLACE, datenum(time_SOLACE)/6000, F_CO2_SOLACE,'.')
+c=colorbar;
+c.Label.String = 'Air sea flux';
+title('SOLACE UW data')
+caxis([-70 30])

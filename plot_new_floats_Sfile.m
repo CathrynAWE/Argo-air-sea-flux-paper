@@ -42,6 +42,8 @@ oxy = ncread(the_file,'DOXY_ADJUSTED');
 NO3 = ncread(the_file,'NITRATE');
 pH = ncread(the_file,'PH_IN_SITU_TOTAL_ADJUSTED');
 pH_error = ncread(the_file,'PH_IN_SITU_TOTAL_ADJUSTED_ERROR');
+%pH = ncread(the_file,'PH_IN_SITU_TOTAL');
+
 
 PAR = ncread(the_file,'DOWNWELLING_PAR');
 Ed380 = ncread(the_file,'DOWN_IRRADIANCE380');

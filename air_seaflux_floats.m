@@ -168,13 +168,37 @@ for i = 1:fs(2)
 end
 
 
+% figure()
+% geoscatter(fCO2_float.lat, fCO2_float.lon, datenum(fCO2_float.time)/4000, fCO2_float.flux,'^')
+% hold on
+% geoscatter(lat_SOLACE, lon_SOLACE, datenum(time_SOLACE)/6000, F_CO2_SOLACE,'.')
+% colorbar
+
+% figure()
+% scatter(fCO2_float.time, fCO2_float.flux,'o')
+
 figure()
-geoscatter(fCO2_float.lat, fCO2_float.lon, datenum(fCO2_float.time)/4000, fCO2_float.flux,'^')
+subplot(2,1,1)
+title('SOTS float and SOLACE UW data')
+yyaxis left
+plot(time_float,lat,'-b')
 hold on
-geoscatter(lat_SOLACE, lon_SOLACE, datenum(time_SOLACE)/6000, F_CO2_SOLACE,'.')
-colorbar
+plot(time_SOLACE,lat_SOLACE,'--b')%,'MarkerSize',2)
+ylabel('Latitude')
+hold off
+yyaxis right
+plot(time_float,lon,'-r')
+hold on
+plot(time_SOLACE,lon_SOLACE,'--r')%,'MarkerSize',2)
+ylabel('Longitude')
+hold off
+xlabel('Time')
 
-figure()
-scatter(fCO2_float.time, fCO2_float.flux,'o')
-
-
+subplot(2,1,2)
+yyaxis left
+plot(fCO2_float.time, fCO2_float.flux,'ob','MarkerSize',4)
+hold on
+plot(time_SOLACE,F_CO2_SOLACE,'-r')
+ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
+hold off
+xlabel('Time')

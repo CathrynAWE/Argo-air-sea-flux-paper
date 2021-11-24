@@ -1,7 +1,9 @@
 file = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/IN2021_V02 SOTS/IMOS_SOOP-CO2_GST_20210414T121956Z_VLMJ_FV01.nc';
 DfCO2_SOTS2021 = ncread(file, 'DfCO2');
 DfCO2_QC_SOTS2021 = ncread(file, 'DfCO2_quality_control');
-u_SOTS2021 = ncread(file,'WSPD');
+u_SOTS2021 = ncread(file,'WSPD'); % this is at 24.7m and needs correcting to 10m, as per Sutton, 2017
+u10_SOTS2021 = u_SOTS2021/(1+(sqrt(0.0011)/0.4)*log(24.7/10));
+
 lat_SOTS2021 = ncread(file, 'LATITUDE');
 lon_SOTS2021 = ncread(file, 'LONGITUDE');
 pressure_SOTS2021 = ncread(file, 'Press_ATM');
@@ -16,7 +18,7 @@ sss_SOTS2021 = S_SOTS2021;
 sst_SOTS2021 = T_SOTS2021;
 
 
-[F_CO2_SOTS2021]=FCO2_CWE(DfCO2_SOTS2021,T_SOTS2021,S_SOTS2021,u_SOTS2021);
+[F_CO2_SOTS2021]=FCO2_CWE(DfCO2_SOTS2021,T_SOTS2021,S_SOTS2021,u10_SOTS2021);
 
 
 % fig = figure()
@@ -36,3 +38,23 @@ c=colorbar;
 c.Label.String = 'Air sea flux';
 title('SOTS 2021 UW data')
 caxis([-70 30])
+
+figure()
+subplot(2,1,1)
+title('SOTS 2021 UW data')
+yyaxis left
+plot(time_SOTS2021,lat_SOTS2021,'-r')
+ylabel('Latitude')
+yyaxis right
+plot(time_SOTS2021,lon_SOTS2021,'-b')
+ylabel('Longitude')
+xlabel('Time')
+
+subplot(2,1,2)
+yyaxis left
+plot(time_SOTS2021,F_CO2_SOTS2021,'ok','MarkerSize',2)
+ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
+yyaxis right
+plot(time_SOTS2021,T_SOTS2021,'-b')
+ylabel('SST')
+xlabel('Time')

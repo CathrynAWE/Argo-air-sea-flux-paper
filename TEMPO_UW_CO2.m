@@ -1,7 +1,8 @@
 file = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/IN2021_V01 TEMPO/IMOS_SOOP-CO2_GST_20210129T004303Z_VLMJ_FV01.nc';
 DfCO2 = ncread(file, 'DfCO2');
 DfCO2_QC = ncread(file, 'DfCO2_quality_control');
-u = ncread(file,'WSPD');
+u = ncread(file,'WSPD'); % this is at 24.7m and needs correcting to 10m, as per Sutton, 2017
+u10 = u/(1+(sqrt(0.0011)/0.4)*log(24.7/10));
 lat = ncread(file, 'LATITUDE');
 pressure = ncread(file, 'Press_ATM');
 press_equil = ncread(file, 'Press_Equil');
@@ -25,7 +26,7 @@ sst = T;
 % %DpCO2 = pCO2_sw - pCO2_atm;
 
 
-[F_CO2]=FCO2_CWE(DfCO2,T,S,u);
+[F_CO2]=FCO2_CWE(DfCO2,T,S,u10);
 
 
 fig = figure()

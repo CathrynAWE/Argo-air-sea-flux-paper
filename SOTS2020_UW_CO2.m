@@ -1,7 +1,9 @@
 file = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/IN2020_V09 SOTS/IMOS_SOOP-CO2_GST_20200827T030011Z_VLMJ_FV01.nc';
 DfCO2_SOTS2020 = ncread(file, 'DfCO2');
 DfCO2_QC_SOTS2020 = ncread(file, 'DfCO2_quality_control');
-u_SOTS2020 = ncread(file,'WSPD');
+u_SOTS2020 = ncread(file,'WSPD'); % this is at 24.7m and needs correcting to 10m, as per Sutton, 2017
+u10_SOTS2020 = u_SOTS2020/(1+(sqrt(0.0011)/0.4)*log(24.7/10));
+
 lat_SOTS2020 = ncread(file, 'LATITUDE');
 lon_SOTS2020 = ncread(file, 'LONGITUDE');
 pressure_SOTS2020 = ncread(file, 'Press_ATM');
@@ -17,7 +19,7 @@ sst_SOTS2020 = T_SOTS2020;
 
 
 
-[F_CO2_SOTS2020]=FCO2_CWE(DfCO2_SOTS2020,T_SOTS2020,S_SOTS2020,u_SOTS2020);
+[F_CO2_SOTS2020]=FCO2_CWE(DfCO2_SOTS2020,T_SOTS2020,S_SOTS2020,u10_SOTS2020);
 
 
 % fig = figure()

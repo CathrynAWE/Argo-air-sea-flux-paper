@@ -21,6 +21,22 @@ sst_SOTS2021 = T_SOTS2021;
 [F_CO2_SOTS2021]=FCO2_CWE(DfCO2_SOTS2021,T_SOTS2021,S_SOTS2021,u10_SOTS2021);
 
 
+
+SOTS2021.FCO2 = F_CO2_SOTS2021;
+SOTS2021.time = time_SOTS2021;
+SOTS2021.lat = lat_SOTS2021;
+SOTS2021.lon = lon_SOTS2021;
+SOTS2021.TEMP = T_SOTS2021;
+SOTS2021.PSAL = S_SOTS2021;
+SOTS2021.dfCO2 = DfCO2_SOTS2021;
+SOTS2021.dfCO2_QC = DfCO2_QC_SOTS2021;
+
+clearvars -except SOTS2021
+
+path =('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper');
+cd(path)
+save('SOTS2021_data.mat')
+
 % fig = figure()
 % scatter(time_SOTS2021,F_CO2_SOTS2021,[],lat_SOTS2021,'filled')
 % c = colorbar;
@@ -32,29 +48,29 @@ sst_SOTS2021 = T_SOTS2021;
 % ylim([-100 20]);
 % saveas(fig, 'SOTS2021_UW_airseaFlux','png')
 
-figure()
-geoscatter(lat_SOTS2021, lon_SOTS2021, datenum(time_SOTS2021)/10000, F_CO2_SOTS2021,'.')
-c=colorbar;
-c.Label.String = 'Air sea flux';
-title('SOTS 2021 UW data')
-caxis([-70 30])
-
-figure()
-subplot(2,1,1)
-title('SOTS 2021 UW data')
-yyaxis left
-plot(time_SOTS2021,lat_SOTS2021,'-r')
-ylabel('Latitude')
-yyaxis right
-plot(time_SOTS2021,lon_SOTS2021,'-b')
-ylabel('Longitude')
-xlabel('Time')
-
-subplot(2,1,2)
-yyaxis left
-plot(time_SOTS2021,F_CO2_SOTS2021,'ok','MarkerSize',2)
-ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
-yyaxis right
-plot(time_SOTS2021,T_SOTS2021,'-b')
-ylabel('SST')
-xlabel('Time')
+% figure()
+% geoscatter(lat_SOTS2021, lon_SOTS2021, datenum(time_SOTS2021)/10000, F_CO2_SOTS2021,'.')
+% c=colorbar;
+% c.Label.String = 'Air sea flux';
+% title('SOTS 2021 UW data')
+% caxis([-70 30])
+% 
+% figure()
+% subplot(2,1,1)
+% title('SOTS 2021 UW data')
+% yyaxis left
+% plot(time_SOTS2021,lat_SOTS2021,'-r')
+% ylabel('Latitude')
+% yyaxis right
+% plot(time_SOTS2021,lon_SOTS2021,'-b')
+% ylabel('Longitude')
+% xlabel('Time')
+% 
+% subplot(2,1,2)
+% yyaxis left
+% plot(time_SOTS2021,F_CO2_SOTS2021,'ok','MarkerSize',2)
+% ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
+% yyaxis right
+% plot(time_SOTS2021,T_SOTS2021,'-b')
+% ylabel('SST')
+% xlabel('Time')

@@ -128,13 +128,15 @@ Alk_LIAR(Alk_LIAR==0)=NaN;
 %H2S set to 0
 
 % calculate fCO2 for float profiles with CO2SYS
-fCO2_float=[];
+float_data=[];
 for i=1:length(Alk_LIAR_20)
     [DATA, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    fCO2_float.fCO2(i) = DATA(23); % uatm
-    fCO2_float.lat(i) = lat(i);
-    fCO2_float.lon(i) = lon(i);
-    fCO2_float.time(i) = time_float(i);
+    float_data.fCO2(i) = DATA(23); % uatm
+    float_data.lat(i) = lat(i);
+    float_data.lon(i) = lon(i);
+    float_data.time(i) = time_float(i);
+    float_data.TEMP(i) = temp_20(i);
+    float_data.PSAL(i) = S_20(i);
 end
 
 
@@ -159,13 +161,23 @@ for i = 1:fs(2)
     pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f - pH20_f*100))*(9.8692326671601*10^-6);
 
     % now combine this with atmospheric fCO2
-    DfCO2 = fCO2_float.fCO2(i)-pCO2_atm;
+    DfCO2 = float_data.fCO2(i)-pCO2_atm;
 
-    [F_CO2]=FCO2_CWE(DfCO2,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float]=FCO2_CWE(DfCO2,t_2_f,S_20(i),wsp_f);
 
-    fCO2_float.flux(i) = F_CO2;
+    float_data.flux(i) = F_CO2_float;
+    float_data.wsp(i) = wsp_f;
     
 end
+
+
+
+clearvars -except float_data
+
+path =('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper');
+cd(path)
+save('float_data.mat')
+
 
 
 % figure()
@@ -176,29 +188,29 @@ end
 
 % figure()
 % scatter(fCO2_float.time, fCO2_float.flux,'o')
-
-figure()
-subplot(2,1,1)
-title('SOTS float and SOLACE UW data')
-yyaxis left
-plot(time_float,lat,'-b')
-hold on
-plot(time_SOLACE,lat_SOLACE,'--b')%,'MarkerSize',2)
-ylabel('Latitude')
-hold off
-yyaxis right
-plot(time_float,lon,'-r')
-hold on
-plot(time_SOLACE,lon_SOLACE,'--r')%,'MarkerSize',2)
-ylabel('Longitude')
-hold off
-xlabel('Time')
-
-subplot(2,1,2)
-yyaxis left
-plot(fCO2_float.time, fCO2_float.flux,'ob','MarkerSize',4)
-hold on
-plot(time_SOLACE,F_CO2_SOLACE,'-r')
-ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
-hold off
-xlabel('Time')
+% 
+% figure()
+% subplot(2,1,1)
+% title('SOTS float and SOLACE UW data')
+% yyaxis left
+% plot(time_float,lat,'-b')
+% hold on
+% plot(time_SOLACE,lat_SOLACE,'--b')%,'MarkerSize',2)
+% ylabel('Latitude')
+% hold off
+% yyaxis right
+% plot(time_float,lon,'-r')
+% hold on
+% plot(time_SOLACE,lon_SOLACE,'--r')%,'MarkerSize',2)
+% ylabel('Longitude')
+% hold off
+% xlabel('Time')
+% 
+% subplot(2,1,2)
+% yyaxis left
+% plot(fCO2_float.time, fCO2_float.flux,'ob','MarkerSize',4)
+% hold on
+% plot(time_SOLACE,F_CO2_SOLACE,'-r')
+% ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
+% hold off
+% xlabel('Time')

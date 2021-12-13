@@ -1,19 +1,20 @@
 file = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/IN2021_V01 TEMPO/IMOS_SOOP-CO2_GST_20210129T004303Z_VLMJ_FV01.nc';
-DfCO2 = ncread(file, 'DfCO2');
-DfCO2_QC = ncread(file, 'DfCO2_quality_control');
+DfCO2_TEMPO = ncread(file, 'DfCO2');
+DfCO2_QC_TEMPO = ncread(file, 'DfCO2_quality_control');
 u = ncread(file,'WSPD'); % this is at 24.7m and needs correcting to 10m, as per Sutton, 2017
-u10 = u/(1+(sqrt(0.0011)/0.4)*log(24.7/10));
-lat = ncread(file, 'LATITUDE');
+u10_TEMPO = u/(1+(sqrt(0.0011)/0.4)*log(24.7/10));
+lat_TEMPO = ncread(file, 'LATITUDE');
+lon_TEMPO = ncread(file, 'LONGITUDE');
 pressure = ncread(file, 'Press_ATM');
 press_equil = ncread(file, 'Press_Equil');
-time = ncread(file, 'TIME') + datetime(1950,1,1);
-d = time;
+time_TEMPO = ncread(file, 'TIME') + datetime(1950,1,1);
+d = time_TEMPO;
 doy = day(d,'dayofyear');
-T = ncread(file,'TEMP');
+T_TEMPO = ncread(file,'TEMP');
 Temp_equil = ncread(file, 'TEMP_2');
-S = ncread(file,'PSAL');
-sss = S;
-sst = T;
+S_TEMPO = ncread(file,'PSAL');
+sss = S_TEMPO;
+sst = T_TEMPO;
 
 % % convert from mole fraction to pCO2
 % slp = press_equil./101.325;
@@ -26,16 +27,31 @@ sst = T;
 % %DpCO2 = pCO2_sw - pCO2_atm;
 
 
-[F_CO2]=FCO2_CWE(DfCO2,T,S,u10);
+[F_CO2_TEMPO]=FCO2_CWE(DfCO2_TEMPO,T_TEMPO,S_TEMPO,u10_TEMPO);
 
 
-fig = figure()
-scatter(time,F_CO2,[],lat,'filled')
-c = colorbar;
-c.Label.String = 'Latitude';
-hold on
-yline(0);
-xlabel('time')
-ylabel('air-sea CO2 flux TEMPO')
-ylim([-200 20]);
-saveas(fig, 'TEMPO_UW_airseaFlux','png')
+TEMPO.FCO2 = F_CO2_TEMPO;
+TEMPO.time = time_TEMPO;
+TEMPO.lat = lat_TEMPO;
+TEMPO.lon = lon_TEMPO;
+TEMPO.TEMP = T_TEMPO;
+TEMPO.PSAL = S_TEMPO;
+TEMPO.dfCO2 = DfCO2_TEMPO;
+TEMPO.dfCO2_QC = DfCO2_QC_TEMPO;
+
+clearvars -except TEMPO
+
+path =('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper');
+cd(path)
+save('TEMPO_data.mat')
+% 
+% fig = figure()
+% scatter(time_TEMPO,F_CO2_TEMPO,[],lat_TEMPO,'filled')
+% c = colorbar;
+% c.Label.String = 'Latitude';
+% hold on
+% yline(0);
+% xlabel('time')
+% ylabel('air-sea CO2 flux TEMPO')
+% ylim([-200 20]);
+% saveas(fig, 'TEMPO_UW_airseaFlux','png')

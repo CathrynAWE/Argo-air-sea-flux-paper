@@ -22,17 +22,17 @@ sss_SOLACE = S_SOLACE;
 sst_SOLACE = T_SOLACE;
 
 % read the ERA5 data for the area of the float
-file_path = 'C:\Users\cawynn\cloudstor\Air sea flux manuscript';
-fileERA = [file_path '\adaptor.mars.internal-1635986988.5401623-6576-5-bb73848d-a029-46b4-abef-e1d94760fbeb.nc'];
-
-u_10 = ncread(fileERA,'u10');
-v_10 = ncread(fileERA, 'v10');
-t_2 = ncread(fileERA, 't2m')-273.16; % Kelvin converted to Celsius
-msp = ncread(fileERA, 'msl');
-EraTime = hours(ncread(fileERA, 'time'))+ datetime(1900,1,1);
-EraLat = ncread(fileERA, 'latitude');
-EraLon = ncread(fileERA, 'longitude');
-
+% file_path = 'C:\Users\cawynn\cloudstor\Air sea flux manuscript';
+% fileERA = [file_path '\adaptor.mars.internal-1635986988.5401623-6576-5-bb73848d-a029-46b4-abef-e1d94760fbeb.nc'];
+% 
+% u_10 = ncread(fileERA,'u10');
+% v_10 = ncread(fileERA, 'v10');
+% t_2 = ncread(fileERA, 't2m')-273.16; % Kelvin converted to Celsius
+% msp = ncread(fileERA, 'msl');
+% EraTime = hours(ncread(fileERA, 'time'))+ datetime(1900,1,1);
+% EraLat = ncread(fileERA, 'latitude');
+% EraLon = ncread(fileERA, 'longitude');
+% 
 % wsp_SOLACE=[];
 % for i = 1:length(time_SOLACE)
 %     
@@ -49,10 +49,24 @@ EraLon = ncread(fileERA, 'longitude');
 
 % save('SOLACE_ERA5_Winds.mat','wsp_SOLACE','-v7.3');
 
-load(win
+load('SOLACE_ERA5_winds.mat');
 
-[F_CO2_SOLACE]=FCO2_CWE(DfCO2_SOLACE,T_SOLACE,S_SOLACE,wsp_SOLACE);
+[F_CO2_SOLACE]=FCO2_CWE(DfCO2_SOLACE,T_SOLACE,S_SOLACE,wsp_SOLACE');
 
+SOLACE.FCO2 = F_CO2_SOLACE;
+SOLACE.time = time_SOLACE;
+SOLACE.lat = lat_SOLACE;
+SOLACE.lon = lon_SOLACE;
+SOLACE.TEMP = T_SOLACE;
+SOLACE.PSAL = S_SOLACE;
+SOLACE.dfCO2 = DfCO2_SOLACE;
+SOLACE.dfCO2_QC = DfCO2_QC_SOLACE;
+
+clearvars -except SOLACE
+
+path =('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper');
+cd(path)
+save('SOLACE_data.mat')
 
 % fig = figure();
 % scatter(time_SOLACE,F_CO2_SOLACE,[],lat_SOLACE,'filled')
@@ -73,25 +87,25 @@ load(win
 
 % windspeeds from ship
 %[F_CO2_ship_SOLACE]=FCO2_CWE(DfCO2_SOLACE,T_SOLACE,S_SOLACE,u10_ship_SOLACE);
-
-figure()
-subplot(2,1,1)
-title('SOLACE UW data')
-yyaxis left
-plot(time_SOLACE,lat_SOLACE,'-b')
-ylabel('Latitude')
-yyaxis right
-plot(time_SOLACE,lon_SOLACE,'-r')
-ylabel('Longitude')
-xlabel('Time')
-
-subplot(2,1,2)
-yyaxis left
-% plot(time_SOLACE,F_CO2_ship_SOLACE,'ob','MarkerSize',2)
-% ylabel('Air-sea CO2 flux mmol m^-2 d^-1 - ships winds')
-plot(time_SOLACE,T_SOLACE,'ob','MarkerSize',2)
-ylabel('SST UW - C')
-yyaxis right
-plot(time_SOLACE,F_CO2_SOLACE,'-r')
-ylabel('Air-sea CO2 flux mmol m^-2 d^-1 - ERA5 winds')
-xlabel('Time')
+% 
+% figure()
+% subplot(2,1,1)
+% title('SOLACE UW data')
+% yyaxis left
+% plot(time_SOLACE,lat_SOLACE,'-b')
+% ylabel('Latitude')
+% yyaxis right
+% plot(time_SOLACE,lon_SOLACE,'-r')
+% ylabel('Longitude')
+% xlabel('Time')
+% 
+% subplot(2,1,2)
+% yyaxis left
+% % plot(time_SOLACE,F_CO2_ship_SOLACE,'ob','MarkerSize',2)
+% % ylabel('Air-sea CO2 flux mmol m^-2 d^-1 - ships winds')
+% plot(time_SOLACE,T_SOLACE,'ob','MarkerSize',2)
+% ylabel('SST UW - C')
+% yyaxis right
+% plot(time_SOLACE,F_CO2_SOLACE,'-r')
+% ylabel('Air-sea CO2 flux mmol m^-2 d^-1 - ERA5 winds')
+% xlabel('Time')

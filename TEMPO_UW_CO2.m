@@ -16,18 +16,38 @@ S_TEMPO = ncread(file,'PSAL');
 sss = S_TEMPO;
 sst = T_TEMPO;
 
-% % convert from mole fraction to pCO2
-% slp = press_equil./101.325;
-% svp = exp(25.4543-67.4509.*(100./(sst+273.15)) - 4.8489.*log((sst+273.15)./100) - 0.000544.*sss);
-% pCO2_sw_Equ = xCO2_SW.*slp.*(1-svp);
-% pCO2_sw = pCO2_sw_Equ .*exp((0.0423*(sst - Temp_equil)));
-% pCO2_atm = xCO2_AIR.*slp.*(1-svp);
-% % Pfe2011a.pdf p.2
-% % Pfeil, 2013
-% %DpCO2 = pCO2_sw - pCO2_atm;
+% % read the ERA5 data for the area of the float
+% file_path = 'C:\Users\cawynn\cloudstor\Air sea flux manuscript';
+% fileERA = [file_path '\voyages_adaptor.mars.internal-1639716493.7651997-10938-14-37681699-ea52-48c7-a23c-fae4cd4304a3.nc'];
+% 
+% u_10 = ncread(fileERA,'u10');
+% v_10 = ncread(fileERA, 'v10');
+% t_2 = ncread(fileERA, 't2m')-273.16; % Kelvin converted to Celsius
+% msp = ncread(fileERA, 'msl');
+% EraTime = hours(ncread(fileERA, 'time'))+ datetime(1900,1,1);
+% EraLat = ncread(fileERA, 'latitude');
+% EraLon = ncread(fileERA, 'longitude');
+% 
+% wsp_TEMPO=[];
+% for i = 1:length(time_TEMPO)
+%     
+%     % find the ERA file index that is closest in time to the UW time points
+%     idx_T = knnsearch(datenum(EraTime(:)),datenum(time_TEMPO(i)));
+%     idx_lat = knnsearch(EraLat(:),lat_TEMPO(i));
+%     idx_lon = knnsearch(EraLon(:),lon_TEMPO(i));
+% 
+%     wsp_TEMPO(i) = sqrt(u_10(idx_lon,idx_lat,1,idx_T)^2 + v_10(idx_lon,idx_lat,1,idx_T)^2);
+% %     t_2_f = t_2(idx_lon,idx_lat,1,idx_T);
+% %     msp_f = msp(idx_lon,idx_lat,1,idx_T);
+%       
+% end
+% 
+% save('TEMPO_ERA5_Winds.mat','wsp_TEMPO','-v7.3');
+
+load('TEMPO_ERA5_Winds.mat');
 
 
-[F_CO2_TEMPO]=FCO2_CWE(DfCO2_TEMPO,T_TEMPO,S_TEMPO,u10_TEMPO);
+[F_CO2_TEMPO]=FCO2_CWE(DfCO2_TEMPO,T_TEMPO,S_TEMPO,wsp_TEMPO');
 
 
 TEMPO.FCO2 = F_CO2_TEMPO;

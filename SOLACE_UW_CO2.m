@@ -23,7 +23,7 @@ sst_SOLACE = T_SOLACE;
 
 % read the ERA5 data for the area of the float
 % file_path = 'C:\Users\cawynn\cloudstor\Air sea flux manuscript';
-% fileERA = [file_path '\adaptor.mars.internal-1635986988.5401623-6576-5-bb73848d-a029-46b4-abef-e1d94760fbeb.nc'];
+% fileERA = [file_path '\SOTS_float_adaptor.mars.internal-1635986988.5401623-6576-5-bb73848d-a029-46b4-abef-e1d94760fbeb.nc'];
 % 
 % u_10 = ncread(fileERA,'u10');
 % v_10 = ncread(fileERA, 'v10');

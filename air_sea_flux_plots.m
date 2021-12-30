@@ -11,18 +11,18 @@ load('SOTS_float_Data.mat');
 load('S55_float_Data.mat');
 
 % mooring vs ship and SOTS float within 1 degree lat and lon
-figure(1)
-plot(SOTS2020.time(abs(SOTS2020.lat-(-47))<=1 & abs(SOTS2020.lon-142) <=1),SOTS2020.FCO2(abs(SOTS2020.lat-(-47))<=1 & abs(SOTS2020.lon-142) <=1),'-')
-hold on
-yline(0)
-plot(SOTS2021.time(abs(SOTS2021.lat-(-47))<=1 & abs(SOTS2021.lon-142) <=1),SOTS2021.FCO2(abs(SOTS2021.lat-(-47))<=1 & abs(SOTS2021.lon-142) <=1),'.')
-plot(SOLACE.time(abs(SOLACE.lat-(-47))<=1 & abs(SOLACE.lon-142) <=1),SOLACE.FCO2(abs(SOLACE.lat-(-47))<=1 & abs(SOLACE.lon-142) <=1),'*')
-plot(TEMPO.time(abs(TEMPO.lat-(-47))<=1 & abs(TEMPO.lon-142) <=1),TEMPO.FCO2(abs(TEMPO.lat-(-47))<=1 & abs(TEMPO.lon-142) <=1),'+')
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'or','MarkerSize',4)
-plot(SOTS_float_data.time(abs(SOTS_float_data.lat-(-47))<=1 & abs(SOTS_float_data.lon-142) <=1),SOTS_float_data.flux(abs(SOTS_float_data.lat-(-47))<=1 & abs(SOTS_float_data.lon-142) <=1),'ok','MarkerSize',4)
-legend('SOTS2020','0line','SOTS2021','SOLACE','TEMPO','SOFS','SOTS float','Orientation','horizontal','Location','bestoutside')
-title('mooring vs ship and float flux data within 1 degree lat and lon')
-hold off
+% figure(1)
+% plot(SOTS2020.time(abs(SOTS2020.lat-(-47))<=1 & abs(SOTS2020.lon-142) <=1),SOTS2020.FCO2(abs(SOTS2020.lat-(-47))<=1 & abs(SOTS2020.lon-142) <=1),'-')
+% hold on
+% yline(0)
+% plot(SOTS2021.time(abs(SOTS2021.lat-(-47))<=1 & abs(SOTS2021.lon-142) <=1),SOTS2021.FCO2(abs(SOTS2021.lat-(-47))<=1 & abs(SOTS2021.lon-142) <=1),'.')
+% plot(SOLACE.time(abs(SOLACE.lat-(-47))<=1 & abs(SOLACE.lon-142) <=1),SOLACE.FCO2(abs(SOLACE.lat-(-47))<=1 & abs(SOLACE.lon-142) <=1),'*')
+% plot(TEMPO.time(abs(TEMPO.lat-(-47))<=1 & abs(TEMPO.lon-142) <=1),TEMPO.FCO2(abs(TEMPO.lat-(-47))<=1 & abs(TEMPO.lon-142) <=1),'+')
+% plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'or','MarkerSize',4)
+% plot(SOTS_float_data.time(abs(SOTS_float_data.lat-(-47))<=1 & abs(SOTS_float_data.lon-142) <=1),SOTS_float_data.flux(abs(SOTS_float_data.lat-(-47))<=1 & abs(SOTS_float_data.lon-142) <=1),'ok','MarkerSize',4)
+% legend('SOTS2020','0line','SOTS2021','SOLACE','TEMPO','SOFS','SOTS float','Orientation','horizontal','Location','bestoutside')
+% title('mooring vs ship and float flux data within 1 degree lat and lon')
+% hold off
 
 %%% SOTS float
 SOLACE_SOTS_lat_msk = SOLACE.lat>min(SOTS_float_data.lat) & SOLACE.lat<max(SOTS_float_data.lat);
@@ -93,8 +93,6 @@ hold on
 plot(TEMPO.time(TEMPO_55_lat_lon_msk==2),TEMPO.FCO2(TEMPO_55_lat_lon_msk==2),'+b','MarkerSize',2)
 plot(S55_float_data.time,S55_float_data.flux,'ob','MarkerSize',4)
 xlim([datetime('01-December-2020') datetime('01-May-2021')])
-
-
 
 
 % mooring vs ship UW data

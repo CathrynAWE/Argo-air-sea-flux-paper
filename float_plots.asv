@@ -386,25 +386,25 @@ for i = 1:6
 end
 
 figure()
-for i = 1:6
+for i = 7:6
     subplot(3,2,i)
     title('Red Triangle float Alk LIAR, green = Alk ES, blue . CTD pH')
-    plot(SOTS_float_data.Alk_LIAR(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.Alk_pres(:,month(SOTS_float_data.time)==(i+6)),'^r', 'MarkerSize',2)
+    plot(SOTS_float_data.Alk_LIAR(:,month(SOTS_float_data.time)==i),SOTS_float_data.Alk_pres(:,month(SOTS_float_data.time)==i),'^r', 'MarkerSize',2)
     hold on
-    plot(SOTS_float_data.Alk_ES(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.Alk_pres(:,month(SOTS_float_data.time)==(i+6)),'^g', 'MarkerSize',2)
-    plot(CTD_data.raw_data.Alkalinity(CTD_data.raw_data.month==(i+6)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==(i+6)),'.b','MarkerSize',10)
+    plot(SOTS_float_data.Alk_ES(:,month(SOTS_float_data.time)==i),SOTS_float_data.Alk_pres(:,month(SOTS_float_data.time)==i),'^g', 'MarkerSize',2)
+    plot(CTD_data.raw_data.Alkalinity(CTD_data.raw_data.month==i), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==i),'.b','MarkerSize',10)
     if i ==1
-        xlabel('Alkalinity - July')
+        xlabel('Alkalinity - Jan')
     elseif i ==2
-        xlabel('Alkalinity - Aug')
+        xlabel('Alkalinity - Feb')
     elseif i==3
-        xlabel('Alkalinity - Sep')
+        xlabel('Alkalinity - Mar')
     elseif i==4
-        xlabel('Alkalinity - Oct')
+        xlabel('Alkalinity - Apr')
     elseif i==5
-        xlabel('Alkalinity - Nov')
+        xlabel('Alkalinity - May')
     elseif i==6
-        xlabel('Alkalinity - Dec')
+        xlabel('Alkalinity - June')
     end
     ylabel('Depth dbar')
     % xlim([7.9 8.2])

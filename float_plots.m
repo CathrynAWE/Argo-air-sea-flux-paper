@@ -4,12 +4,16 @@ load('SOTS_float_data.mat')
 
 load('CTD_data.mat')
 
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% float pH vs SOLACE CTD cast pH
+
 figure()
+title('float pH and SOLACE CTD casts')
 plot(SOTS_float_data.pH_LIR_Deep(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '^r', 'MarkerSize', 3)
 hold on
 plot(SOTS_float_data.pH_LIR_Shallow(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), 'og', 'MarkerSize', 3)
 plot(SOTS_float_data.pH_Williams_Deep(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '+k', 'MarkerSize', 3)
-plot(CTD_data.raw_data.pH(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('12-12-2020','InputFormat','dd-MM-yyyy')), CTD_data.raw_data.Depth(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('12-12-2020','InputFormat','dd-MM-yyyy')),'.b', 'MarkerSize', 12)
+plot(CTD_data.raw_data.pH(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')), CTD_data.raw_data.Depth(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')),'.b', 'MarkerSize', 12)
 hold off
 xlabel('pH total scale')
 ylabel('Depth dbar')
@@ -17,7 +21,34 @@ legend('Triangle float LD','o float LS','+ float WD','. CTD','Orientation','hori
 set(gca, 'YDir','reverse')
 % ylim([0 100])
 
+%%% this time with TS diagram
+figure()
+subplot(1,2,1)
+title('float pH and SOLACE CTD casts')
+plot(SOTS_float_data.pH_LIR_Deep(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '^r', 'MarkerSize', 3)
+hold on
+plot(SOTS_float_data.pH_LIR_Shallow(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), 'og', 'MarkerSize', 3)
+plot(SOTS_float_data.pH_Williams_Deep(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '+k', 'MarkerSize', 3)
+plot(CTD_data.raw_data.pH(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')), CTD_data.raw_data.Depth(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')),'.b', 'MarkerSize', 12)
+hold off
+xlabel('pH total scale')
+ylabel('Depth dbar')
+legend('Triangle float LD','o float LS','+ float WD','. CTD','Orientation','horizontal','Location','bestoutside')
+set(gca, 'YDir','reverse')
+% ylim([0 100])
 
+subplot(1,2,2)
+plot(SOTS_float_data.TEMP(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.psal(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '^r', 'MarkerSize', 3)
+hold on
+plot(CTD_data.raw_data.T_insitu(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')), CTD_data.raw_data.Salinity_CTD(CTD_data.raw_data.date < datetime('18-12-2020','InputFormat','dd-MM-yyyy') & CTD_data.raw_data.date > datetime('09-12-2020','InputFormat','dd-MM-yyyy')),'.b', 'MarkerSize', 12)
+hold off
+xlabel('Temp')
+ylabel('PSAL')
+legend('Triangle float temp','. CTD temp','Orientation','horizontal','Location','bestoutside')
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
 figure()
 plot(SOTS_float_data.Alk_LIAR(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), SOTS_float_data.Alk_pres(:,SOTS_float_data.time < datetime('18-12-2020','InputFormat','dd-MM-yyyy')), '^r', 'MarkerSize', 3)
 hold on
@@ -28,335 +59,179 @@ xlabel('Alk umol/kg')
 ylabel('Depth dbar')
 legend('Triangle float LIAR Alk','o float ES Alk','. CTD','Orientation','horizontal','Location','bestoutside')
 set(gca, 'YDir','reverse')
-% ylim([0 100])
+ylim([0 100])
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% all float pH vs CTD casts at SOTS
 figure()
-subplot(3,2,1)
-title('Red Triangle float pH LD, green = LD, cyan = WD, blue . CTD pH')
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(:,month(CTD_data.raw_data.date)==1), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==1),'.b','MarkerSize',10)
-xlabel('pH total scale- Jan')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,2)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==2), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==2),'.b','MarkerSize',10)
-xlabel('pH total scale - Feb')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,3)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==3), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==3),'.b','MarkerSize',10)
-xlabel('pH total scale - Mar')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,4)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==4), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==4),'.b','MarkerSize',10)
-xlabel('pH total scale - Apr')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,5)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==5), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==5),'.b','MarkerSize',10)
-xlabel('pH total scale - May')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,6)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==6), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==6),'.b','MarkerSize',10)
-xlabel('pH total scale - Jun')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
+for i = 1:6
+    subplot(3,2,i)
+    plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^r', 'MarkerSize',2)
+    hold on
+    plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^g', 'MarkerSize',2)
+    plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^c', 'MarkerSize',2)
+    plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==i), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==i),'.b','MarkerSize',10)
+    if i ==1
+        xlabel('pH total scale - Jan')
+    elseif i ==2
+        xlabel('pH total scale - Feb')
+    elseif i==3
+        xlabel('pH total scale - Mar')
+    elseif i==4
+        xlabel('pH total scale - Apr')
+    elseif i==5
+        xlabel('pH total scale - May')
+    elseif i==6
+        xlabel('pH total scale - June')
+    end
+    ylabel('Depth dbar')
+    xlim([7.9 8.2])
+    ylim([0 100])
+    set(gca, 'YDir','reverse')
+    
+end
 
 figure()
-subplot(3,2,1)
-title('Red Triangle float pH LD, green = LD, cyan = WD, blue . CTD pH')
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==7), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==7),'.b','MarkerSize',10)
-xlabel('pH total scale- July')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
+for i = 1:6
+    subplot(3,2,i)
+    plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^r', 'MarkerSize',2)
+    hold on
+    plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^g', 'MarkerSize',2)
+    plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^c', 'MarkerSize',2)
+    plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==(i+6)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==(i+6)),'.b','MarkerSize',10)
+    if i ==1
+        xlabel('pH total scale - July')
+    elseif i ==2
+        xlabel('pH total scale - Aug')
+    elseif i==3
+        xlabel('pH total scale - Sep')
+    elseif i==4
+        xlabel('pH total scale - Oct')
+    elseif i==5
+        xlabel('pH total scale - Nov')
+    elseif i==6
+        xlabel('pH total scale - Dec')
+    end
+    ylabel('Depth dbar')
+    xlim([7.9 8.2])
+    ylim([0 100])
+    set(gca, 'YDir','reverse')
+    
+end
 
-subplot(3,2,2)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==8), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==8),'.b','MarkerSize',10)
-xlabel('pH total scale - Aug')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,3)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==9), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==9),'.b','MarkerSize',10)
-xlabel('pH total scale - Sept')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,4)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==10), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==10),'.b','MarkerSize',10)
-xlabel('pH total scale - Oct')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,5)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==11), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==11),'.b','MarkerSize',10)
-xlabel('pH total scale - Nov')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,6)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==12), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==12),'.b','MarkerSize',10)
-xlabel('pH total scale - Dec')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 2000])
-set(gca, 'YDir','reverse')
-hold off
-
-%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% all float pH vs CTD casts at SOTS with temp / sal trace
+%%% Mar, Apr, July, Aug, Oct, Nov, Dec
 figure()
-subplot(3,2,1)
-title('Red Triangle float pH LD, green = LD, cyan = WD, blue . CTD pH')
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==1),SOTS_float_data.pres(:,month(SOTS_float_data.time)==1),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(:,month(CTD_data.raw_data.date)==1), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==1),'.b','MarkerSize',10)
-xlabel('pH total scale- Jan')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
+n=[3,3,4,4,7,7];
+for i = 1:6
+    if rem(i,2)~=0
+        subplot(3,2,i)
+        plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
+        plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('Depth dbar')
+        xlim([7.9 8.2])
+        ylim([0 100])
+        set(gca, 'YDir','reverse')
+        if i ==1
+            xlabel('pH total scale - Mar')
+        elseif i ==3
+            xlabel('pH total scale - Apr')
+        elseif i==5
+            xlabel('pH total scale - July')
+        end
+    
+    elseif rem(i,2)==0
+        subplot(3,2,i)
+        plot(SOTS_float_data.TEMP(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.psal(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot( CTD_data.raw_data.T_insitu(month(CTD_data.raw_data.date)==n(i)),CTD_data.raw_data.Salinity_CTD(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('PSAL')
+        xlabel('TEMP')
+        hold off
+        
+    end
+end
 
-subplot(3,2,2)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==2),SOTS_float_data.pres(:,month(SOTS_float_data.time)==2),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==2), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==2),'.b','MarkerSize',10)
-xlabel('pH total scale - Feb')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,3)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==3),SOTS_float_data.pres(:,month(SOTS_float_data.time)==3),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==3), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==3),'.b','MarkerSize',10)
-xlabel('pH total scale - Mar')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,4)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==4),SOTS_float_data.pres(:,month(SOTS_float_data.time)==4),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==4), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==4),'.b','MarkerSize',10)
-xlabel('pH total scale - Apr')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,5)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==5),SOTS_float_data.pres(:,month(SOTS_float_data.time)==5),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==5), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==5),'.b','MarkerSize',10)
-xlabel('pH total scale - May')
-ylabel('Depth dbar')
-xlim([7.5 8.5])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,6)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==6),SOTS_float_data.pres(:,month(SOTS_float_data.time)==6),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==6), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==6),'.b','MarkerSize',10)
-xlabel('pH total scale - Jun')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
+%%% Mar, Apr, July, Aug, Oct, Nov, Dec
+figure()
+n=[8,8,10,10,11,11];
+for i = 1:6
+    if rem(i,2)~=0
+        subplot(3,2,i)
+        plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
+        plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('Depth dbar')
+        xlim([7.9 8.2])
+        ylim([0 100])
+        set(gca, 'YDir','reverse')
+        if i ==1
+            xlabel('pH total scale - Aug')
+        elseif i ==3
+            xlabel('pH total scale - Oct')
+        elseif i==5
+            xlabel('pH total scale - Nov')
+        end
+    
+    elseif rem(i,2)==0
+        subplot(3,2,i)
+        plot(SOTS_float_data.TEMP(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.psal(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot( CTD_data.raw_data.T_insitu(month(CTD_data.raw_data.date)==n(i)),CTD_data.raw_data.Salinity_CTD(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('PSAL')
+        xlabel('TEMP')
+        hold off
+ 
+    end
+end
 
 
 figure()
-subplot(3,2,1)
-title('Red Triangle float pH LD, green = LD, cyan = WD, blue . CTD pH')
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==7),SOTS_float_data.pres(:,month(SOTS_float_data.time)==7),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==7), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==7),'.b','MarkerSize',10)
-xlabel('pH total scale- July')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
+n=[12,12];
+for i = 1:2
+    if rem(i,2)~=0
+        subplot(3,2,i)
+        plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
+        plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('Depth dbar')
+        xlim([7.9 8.2])
+        ylim([0 100])
+        set(gca, 'YDir','reverse')
+%         if i ==1
+            xlabel('pH total scale - Dec')
+%         elseif i ==3
+%             xlabel('pH total scale - Oct')
+%         elseif i==5
+%             xlabel('pH total scale - Nov')
+%         end
+%     
+    elseif rem(i,2)==0
+        subplot(3,2,i)
+subplot(3,2,i)
+        plot(SOTS_float_data.TEMP(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.psal(:,month(SOTS_float_data.time)==n(i)),'^r', 'MarkerSize',2)
+        hold on
+        plot( CTD_data.raw_data.T_insitu(month(CTD_data.raw_data.date)==n(i)),CTD_data.raw_data.Salinity_CTD(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        ylabel('PSAL')
+        xlabel('TEMP')
+        hold off
 
-subplot(3,2,2)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==8),SOTS_float_data.pres(:,month(SOTS_float_data.time)==8),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==8), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==8),'.b','MarkerSize',10)
-xlabel('pH total scale - Aug')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
+    end
+end
 
-subplot(3,2,3)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==9),SOTS_float_data.pres(:,month(SOTS_float_data.time)==9),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==9), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==9),'.b','MarkerSize',10)
-xlabel('pH total scale - Sept')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,4)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==10),SOTS_float_data.pres(:,month(SOTS_float_data.time)==10),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==10), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==10),'.b','MarkerSize',10)
-xlabel('pH total scale - Oct')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,5)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==11),SOTS_float_data.pres(:,month(SOTS_float_data.time)==11),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==11), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==11),'.b','MarkerSize',10)
-xlabel('pH total scale - Nov')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
-
-subplot(3,2,6)
-plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^r', 'MarkerSize',2)
-hold on
-plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^g', 'MarkerSize',2)
-plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==12),SOTS_float_data.pres(:,month(SOTS_float_data.time)==12),'^c', 'MarkerSize',2)
-plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==12), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==12),'.b','MarkerSize',10)
-xlabel('pH total scale - Dec')
-ylabel('Depth dbar')
-xlim([7.9 8.2])
-ylim([0 100])
-set(gca, 'YDir','reverse')
-hold off
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% all float alkalinity vs CTD casts at SOTS
 figure()
 for i = 1:6
     subplot(3,2,i)
@@ -443,3 +318,39 @@ xlabel('Month')
 xlim([0 13])
 ylabel('Alkalinity umol/kg')
 hold off
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% all float pCO2 data as calculated from the various pH corrections and
+%%%%% Alkalinity estimates
+
+figure()
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_atm,'^k','MarkerSize',4)
+hold on
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D,'.r','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S,'.g','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D,'.c','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D_ES,'*r','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S_ES,'*g','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D_ES,'*c','MarkerSize',6)
+hold off
+xlabel('Time')
+xlim([datetime('01-12-2020','inputFormat','dd-MM-yyyy') datetime('15-01-2022','inputFormat','dd-MM-yyyy')])
+ylabel('pCO_2 atm')
+legend('Cape Grim atm pCO_2','float pH - LD - LIAR','float pH - LS - LIAR',...
+    'float pH - WD - LIAR', 'float pH - LD - ES', 'float pH - LS - ES',...
+    'float pH - WD - ES','Orientation','horizontal','Location','southoutside',...
+    'FontSize',8)
+
+
+%%%%%%%%%%%%%%%%%%%
+%%%% mooring wsp vs ERA5 wsp
+load('mooring_data.mat')
+
+figure()
+plot(SOTS_float_data.time, SOTS_float_data.wsp,'^r','MarkerSize',4)
+hold on
+plot(mooring_data.wsp_pCO2_time,mooring_data.wsp_pCO2,'*b','MarkerSize',2)
+hold off
+xlabel('Time')
+ylabel('Windspeed m^-2')
+legend('ERA5 wsp','mooring wsp','Orientation','horizontal','Location','southoutside')

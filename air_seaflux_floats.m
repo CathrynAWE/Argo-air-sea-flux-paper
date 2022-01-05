@@ -190,22 +190,23 @@ SOTS_float_data.Alk_ES = Alk_ES;
 
 % calculate fCO2 for float profiles with CO2SYS
 %SOTS_float_data=[];
+% I will use pCO2 for the floats, since I have pCO2 from Cape Grim
 for i=1:length(Alk_LIAR_20)
     [DATA_L_D, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_L_D(i) = DATA_L_D(23); % uatm
+    SOTS_float_data.pCO2_L_D(i) = DATA_L_D(22); % uatm
     [DATA_L_D_20, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),20,20,2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_L_D_20m(i) = DATA_L_D_20(23); % uatm
+    SOTS_float_data.pCO2_L_D_20m(i) = DATA_L_D_20(22); % uatm
     [DATA_L_S, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_L_S(i) = DATA_L_S(23); % uatm
+    SOTS_float_data.pCO2_L_S(i) = DATA_L_S(22); % uatm
     [DATA_W_D, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_W_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_W_D(i) = DATA_W_D(23); % uatm 
+    SOTS_float_data.pCO2_W_D(i) = DATA_W_D(22); % uatm 
     
     [DATA_L_D_ES, HEADERS, NICEHEADERS]  = CO2SYS(Alk_ES_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_L_D_ES(i) = DATA_L_D_ES(23); % uatm
+    SOTS_float_data.pCO2_L_D_ES(i) = DATA_L_D_ES(22); % uatm
     [DATA_L_S_ES, HEADERS, NICEHEADERS]  = CO2SYS(Alk_ES_20(i),pH_L_S_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_L_S_ES(i) = DATA_L_S_ES(23); % uatm
+    SOTS_float_data.pCO2_L_S_ES(i) = DATA_L_S_ES(22); % uatm
     [DATA_W_D_ES, HEADERS, NICEHEADERS]  = CO2SYS(Alk_ES_20(i),pH_W_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-    SOTS_float_data.fCO2_W_D_ES(i) = DATA_W_D_ES(23); % uatm 
+    SOTS_float_data.pCO2_W_D_ES(i) = DATA_W_D_ES(22); % uatm 
     
     SOTS_float_data.lat(i) = lat(i);
     SOTS_float_data.lon(i) = lon(i);
@@ -223,37 +224,41 @@ end
 %bias correction of float pH = -0.034529 * pH(25C) + 0.26709
 
 for i = 1:fs(2)
-    
+% for i = 1   
     % find the ERA file index that is closest in time to the float time
     idx_T = knnsearch(datenum(EraTime(:)),datenum(time_float(i)));
     idx_lat = knnsearch(EraLat(:),lat(i));
     idx_lon = knnsearch(EraLon(:),lon(i));
 
     wsp_f = sqrt(u_10(idx_lon,idx_lat,1,idx_T)^2 + v_10(idx_lon,idx_lat,1,idx_T)^2);
-    t_2_f = t_2(idx_lon,idx_lat,1,idx_T);
-    msp_f = msp(idx_lon,idx_lat,1,idx_T);
+    %m s-2
+    t_2_f = t_2(idx_lon,idx_lat,1,idx_T); %K
+    msp_f = msp(idx_lon,idx_lat,1,idx_T); %Pa
 
     % water vapour pressure 6.11 * 10^((7.5*(T-273.16))/(237.3+(T-273.16)))
-    pH20_f = 6.11 * 10^((7.5*t_2_f)/(273.3+t_2_f));
+    % Temp in degrees C (hence addition of 273.3 for conversion from
+    % Kelvin)
+    pH20_f = 6.11 * 10^((7.5*t_2_f)/(273.3+t_2_f)); %mbar = hPa
 
     % convert xCO2 in dry air to pCO2
     idx_C = knnsearch(datenum(CGdata_interp.spl_time(:)),datenum(time_float(i)));
     %uatm
-    pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f - pH20_f*100))*(9.8692326671601*10^-6);
-
+    %pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f - pH20_f*100))*(9.8692326671601*10^-6);
+    pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f/100 - pH20_f))*(9.8692326671601*10^-4); %atm
+    
     % now combine this with atmospheric fCO2
-    DfCO2_L_D = SOTS_float_data.fCO2_L_D(i)-pCO2_atm;
-    DfCO2_L_S = SOTS_float_data.fCO2_L_S(i)-pCO2_atm;
-    DfCO2_W_D = SOTS_float_data.fCO2_W_D(i)-pCO2_atm;
-    [F_CO2_float_L_D]=FCO2_CWE(DfCO2_L_D,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_L_S]=FCO2_CWE(DfCO2_L_S,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_W_D]=FCO2_CWE(DfCO2_W_D,t_2_f,S_20(i),wsp_f);
-    DfCO2_L_D_ES = SOTS_float_data.fCO2_L_D_ES(i)-pCO2_atm;
-    DfCO2_L_S_ES = SOTS_float_data.fCO2_L_S_ES(i)-pCO2_atm;
-    DfCO2_W_D_ES = SOTS_float_data.fCO2_W_D_ES(i)-pCO2_atm;
-    [F_CO2_float_L_D_ES]=FCO2_CWE(DfCO2_L_D_ES,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_L_S_ES]=FCO2_CWE(DfCO2_L_S_ES,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_W_D_ES]=FCO2_CWE(DfCO2_W_D_ES,t_2_f,S_20(i),wsp_f);
+    DpCO2_L_D = SOTS_float_data.pCO2_L_D(i)-pCO2_atm;
+    DpCO2_L_S = SOTS_float_data.pCO2_L_S(i)-pCO2_atm;
+    DpCO2_W_D = SOTS_float_data.pCO2_W_D(i)-pCO2_atm;
+    [F_CO2_float_L_D]=FCO2_CWE(DpCO2_L_D,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float_L_S]=FCO2_CWE(DpCO2_L_S,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,t_2_f,S_20(i),wsp_f);
+    DpCO2_L_D_ES = SOTS_float_data.pCO2_L_D_ES(i)-pCO2_atm;
+    DpCO2_L_S_ES = SOTS_float_data.pCO2_L_S_ES(i)-pCO2_atm;
+    DpCO2_W_D_ES = SOTS_float_data.pCO2_W_D_ES(i)-pCO2_atm;
+    [F_CO2_float_L_D_ES]=FCO2_CWE(DpCO2_L_D_ES,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float_L_S_ES]=FCO2_CWE(DpCO2_L_S_ES,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float_W_D_ES]=FCO2_CWE(DpCO2_W_D_ES,t_2_f,S_20(i),wsp_f);
     
     
     SOTS_float_data.flux_L_D(i) = F_CO2_float_L_D;
@@ -262,7 +267,7 @@ for i = 1:fs(2)
     SOTS_float_data.flux_L_D_ES(i) = F_CO2_float_L_D_ES;
     SOTS_float_data.flux_L_S_ES(i) = F_CO2_float_L_S_ES;
     SOTS_float_data.flux_W_D_ES(i) = F_CO2_float_W_D_ES;
-    
+    SOTS_float_data.pCO2_atm(i) = pCO2_atm;
     
     SOTS_float_data.wsp(i) = wsp_f;
     

@@ -46,7 +46,7 @@ yline(0)
 plot(SOTS2021.time(SOTS2021_lat_lon_msk==2),SOTS2021.FCO2(SOTS2021_lat_lon_msk==2),'.')
 plot(SOLACE.time(SOLACE_SOTS_lat_lon_msk==2),SOLACE.FCO2(SOLACE_SOTS_lat_lon_msk==2),'*')
 plot(TEMPO.time(TEMPO_SOTS_lat_lon_msk==2),TEMPO.FCO2(TEMPO_SOTS_lat_lon_msk==2),'+')
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'^r','MarkerSize',4)
+plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'^r','MarkerSize',2)
 plot(SOTS_float_data.time,SOTS_float_data.flux_L_D,'ok','MarkerSize',4)
 plot(SOTS_float_data.time,SOTS_float_data.flux_L_S,'ob','MarkerSize',4)
 plot(SOTS_float_data.time,SOTS_float_data.flux_W_D,'om','MarkerSize',4)
@@ -58,6 +58,7 @@ legend('SOTS2020','0line','SOTS2021','SOLACE','TEMPO','SOFS','SOTS float LD LIAR
     'SOTS float LS LIAR','SOTS float WD LIAR','SOTS float LD ES','SOTS float LS ES',...
     'SOTS float WD ES','Orientation','vertical','Location','westoutside')
 title('mooring vs ship and float flux data within float max and min lat and lon')
+xlim([datetime('01-08-2020','InputFormat','dd-MM-yyyy') datetime('01-09-2021','InputFormat','dd-MM-yyyy')])
 hold off
 
 
@@ -129,7 +130,7 @@ plot(SOTS2021.time(abs(SOTS2021.lat)>45 & abs(SOTS2021.lat) <50), SOTS2021.FCO2(
 plot(SOLACE.time(abs(SOLACE.lat)>45 & abs(SOLACE.lat) <50), SOLACE.FCO2(abs(SOLACE.lat)>45 & abs(SOLACE.lat) <50),'+m','MarkerSize',4)
 plot(TEMPO.time(abs(TEMPO.lat)>45 & abs(TEMPO.lat) <50), TEMPO.FCO2(abs(TEMPO.lat)>45 & abs(TEMPO.lat) <50),'*c','MarkerSize',4)
 plot(SOTS_float_data.time,SOTS_float_data.flux,'ok','MarkerSize',4)
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'.r','MarkerSize',4)
+plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'.r','MarkerSize',4)
 legend('SOTS2020', '0','SOTS2021', 'SOLACE', 'TEMPO', 'Float', 'SOFS','Orientation','horizontal','Location','best');
 % yyaxis right
 % plot(datetime(mooring_data_NCP.time,'ConvertFrom','datenum'), mooring_data_NCP.ncp_C_mgm2hr,'-r','MarkerSize',4)

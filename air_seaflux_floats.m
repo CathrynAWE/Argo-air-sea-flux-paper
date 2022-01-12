@@ -198,6 +198,11 @@ for i=1:length(Alk_LIAR_20)
     SOTS_float_data.pCO2_L_D_20m(i) = DATA_L_D_20(22); % uatm
     [DATA_L_S, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_L_S(i) = DATA_L_S(22); % uatm
+    
+%     pH_L_S_20_corr(i) = -0.034529 * pH_L_S_20(i)+ 0.26709;
+%     [DATA_L_S_corr, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_20_corr(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
+%     SOTS_float_data.pCO2_L_S_corr(i) = DATA_L_S_corr(22); % uatm
+
     [DATA_W_D, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_W_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_W_D(i) = DATA_W_D(22); % uatm 
     
@@ -216,6 +221,7 @@ for i=1:length(Alk_LIAR_20)
     SOTS_float_data.pH_L_D_20(i) = pH_L_D_20(i);
     SOTS_float_data.pH_L_S_20(i) = pH_L_S_20(i);
     SOTS_float_data.pH_W_D_20(i) = pH_W_D_20(i);
+%     SOTS_float_data.pH_L_S_20_cor(i) = pH_L_S_20_corr(i);
     SOTS_float_data.Alk_LIAR_20(i) = Alk_LIAR_20(i);
     SOTS_float_data.Alk_ES_20(i) = Alk_ES_20(i);
     SOTS_float_data.pres_20(i) = pres_20(i);
@@ -224,7 +230,7 @@ end
 %bias correction of float pH = -0.034529 * pH(25C) + 0.26709
 
 for i = 1:fs(2)
-% for i = 1   
+%for i = 156   
     % find the ERA file index that is closest in time to the float time
     idx_T = knnsearch(datenum(EraTime(:)),datenum(time_float(i)));
     idx_lat = knnsearch(EraLat(:),lat(i));
@@ -243,32 +249,40 @@ for i = 1:fs(2)
     % convert xCO2 in dry air to pCO2
     idx_C = knnsearch(datenum(CGdata_interp.spl_time(:)),datenum(time_float(i)));
     %uatm
-    %pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f - pH20_f*100))*(9.8692326671601*10^-6);
-    pCO2_atm = CGdata_interp.ppm_spl(idx_C) * ((msp_f/100 - pH20_f))*(9.8692326671601*10^-4); %atm
+    pCO2_uatm = CGdata_interp.ppm_spl(idx_C) * ((msp_f/100 - pH20_f))*(9.8692326671601*10^-4); %uatm
     
     % now combine this with atmospheric fCO2
-    DpCO2_L_D = SOTS_float_data.pCO2_L_D(i)-pCO2_atm;
-    DpCO2_L_S = SOTS_float_data.pCO2_L_S(i)-pCO2_atm;
-    DpCO2_W_D = SOTS_float_data.pCO2_W_D(i)-pCO2_atm;
-    [F_CO2_float_L_D]=FCO2_CWE(DpCO2_L_D,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_L_S]=FCO2_CWE(DpCO2_L_S,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,t_2_f,S_20(i),wsp_f);
-    DpCO2_L_D_ES = SOTS_float_data.pCO2_L_D_ES(i)-pCO2_atm;
-    DpCO2_L_S_ES = SOTS_float_data.pCO2_L_S_ES(i)-pCO2_atm;
-    DpCO2_W_D_ES = SOTS_float_data.pCO2_W_D_ES(i)-pCO2_atm;
-    [F_CO2_float_L_D_ES]=FCO2_CWE(DpCO2_L_D_ES,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_L_S_ES]=FCO2_CWE(DpCO2_L_S_ES,t_2_f,S_20(i),wsp_f);
-    [F_CO2_float_W_D_ES]=FCO2_CWE(DpCO2_W_D_ES,t_2_f,S_20(i),wsp_f);
+    DpCO2_L_D = SOTS_float_data.pCO2_L_D(i)-pCO2_uatm;
+    DpCO2_L_D_20m = SOTS_float_data.pCO2_L_D_20m(i)-pCO2_uatm;
+    DpCO2_L_S = SOTS_float_data.pCO2_L_S(i)-pCO2_uatm;
+    DpCO2_W_D = SOTS_float_data.pCO2_W_D(i)-pCO2_uatm;
+%     DpCO2_L_S_corr = SOTS_float_data.pCO2_L_S_corr(i)-pCO2_uatm;
+    [F_CO2_float_L_D]=FCO2_CWE(DpCO2_L_D,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_L_D_20m]=FCO2_CWE(DpCO2_L_D_20m,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_L_S]=FCO2_CWE(DpCO2_L_S,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,temp_20(i),S_20(i),wsp_f);
+%     [F_CO2_float_L_S_corr]=FCO2_CWE(DpCO2_L_S_corr,temp_20(i),S_20(i),wsp_f);
+%     [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,t_2_f,S_20(i),wsp_f);
+    DpCO2_L_D_ES = SOTS_float_data.pCO2_L_D_ES(i)-pCO2_uatm;
+    DpCO2_L_S_ES = SOTS_float_data.pCO2_L_S_ES(i)-pCO2_uatm;
+    DpCO2_W_D_ES = SOTS_float_data.pCO2_W_D_ES(i)-pCO2_uatm;
+%     [F_CO2_float_L_D_ES_airtemp]=FCO2_CWE(DpCO2_L_D_ES,t_2_f,S_20(i),wsp_f);
+    [F_CO2_float_L_D_ES]=FCO2_CWE(DpCO2_L_D_ES,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_L_S_ES]=FCO2_CWE(DpCO2_L_S_ES,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_W_D_ES]=FCO2_CWE(DpCO2_W_D_ES,temp_20(i),S_20(i),wsp_f);
     
     
     SOTS_float_data.flux_L_D(i) = F_CO2_float_L_D;
+    SOTS_float_data.flux_L_D_20m(i) = F_CO2_float_L_D_20m;
     SOTS_float_data.flux_L_S(i) = F_CO2_float_L_S;
+%     SOTS_float_data.flux_L_S_corr(i) = F_CO2_float_L_S_corr;
     SOTS_float_data.flux_W_D(i) = F_CO2_float_W_D;
     SOTS_float_data.flux_L_D_ES(i) = F_CO2_float_L_D_ES;
+%     SOTS_float_data.flux_L_D_ES_airtemp(i) = F_CO2_float_L_D_ES_airtemp;
     SOTS_float_data.flux_L_S_ES(i) = F_CO2_float_L_S_ES;
     SOTS_float_data.flux_W_D_ES(i) = F_CO2_float_W_D_ES;
-    SOTS_float_data.pCO2_atm(i) = pCO2_atm;
-    
+    SOTS_float_data.pCO2_uatm(i) = pCO2_uatm;
+    SOTS_float_data.CG_xCO2_uatm(i) = CGdata_interp.ppm_spl(idx_C);
     SOTS_float_data.wsp(i) = wsp_f;
     
 end
@@ -300,6 +314,21 @@ SOTS_float_data.flux_WD_ES_mo_ave = accumarray(SOTS_float_data.data_sorted.Month
 
 SOTS_float_data.mo_ave_month = unique(SOTS_float_data.data_sorted.Month);
 
+
+% calculate the distance between float and mooring
+load('mooring_data.mat')
+
+for i = 1:fs(2)
+%for i = 156   
+    % find the mooring_data index that is closest in time to the float time
+    idx_T = knnsearch(datenum(mooring_data.xCO2_time(:)),datenum(time_float(i)));
+    idx_lat = knnsearch(mooring_data.xCO2_lat(:),lat(i));
+    idx_lon = knnsearch(mooring_data.xCO2_lon(:),lon(i));
+    
+    SOTS_float_data.mooring_lat(i) = mooring_data.xCO2_lat(idx_lat);
+    SOTS_float_data.mooring_lon(i) = mooring_data.xCO2_lon(idx_lon);
+
+end
 
 
 clearvars -except SOTS_float_data

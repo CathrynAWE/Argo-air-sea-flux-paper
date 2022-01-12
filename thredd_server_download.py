@@ -28,5 +28,5 @@ for f in netCDFfiles:
     download_file_from_server_endpoint(f, fnsplit[-1])
 
 # move the files
-dest = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/SOFS xCO2/'
+dest = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/SOFS xCO2'
 shutil.copy(f, dest)

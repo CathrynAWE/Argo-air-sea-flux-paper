@@ -129,7 +129,7 @@ hold on
 plot(SOTS2021.time(abs(SOTS2021.lat)>45 & abs(SOTS2021.lat) <50), SOTS2021.FCO2(abs(SOTS2021.lat)>45 & abs(SOTS2021.lat) <50),'^b','MarkerSize',4)
 plot(SOLACE.time(abs(SOLACE.lat)>45 & abs(SOLACE.lat) <50), SOLACE.FCO2(abs(SOLACE.lat)>45 & abs(SOLACE.lat) <50),'+m','MarkerSize',4)
 plot(TEMPO.time(abs(TEMPO.lat)>45 & abs(TEMPO.lat) <50), TEMPO.FCO2(abs(TEMPO.lat)>45 & abs(TEMPO.lat) <50),'*c','MarkerSize',4)
-plot(SOTS_float_data.time,SOTS_float_data.flux,'ok','MarkerSize',4)
+% plot(SOTS_float_data.time,SOTS_float_data.flux,'ok','MarkerSize',4)
 plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'.r','MarkerSize',4)
 legend('SOTS2020', '0','SOTS2021', 'SOLACE', 'TEMPO', 'Float', 'SOFS','Orientation','horizontal','Location','best');
 % yyaxis right
@@ -147,13 +147,13 @@ yyaxis left
 plot(SOLACE.time,SOLACE.lat,'-')
 hold on
 plot(SOTS2021.time,SOTS2021.lat,'+','MarkerSize',4)
-plot(mooring_data.dxCO2_time,mooring_data.wsp_lat,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_lat,'o','MarkerSize',2)
 ylabel('Latitude')
 
 yyaxis right
 plot(SOLACE.time,SOLACE.lon,'-')
 plot(SOTS2021.time,SOTS2021.lon,'+','MarkerSize',2)
-plot(mooring_data.dxCO2_time,mooring_data.wsp_lon,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_lon,'o','MarkerSize',2)
 ylabel('Longitude')
 legend('SOLACE','SOTS2021','SOFS','Orientation','horizontal','Location','best')
 xlim([datetime('2020-12-04','InputFormat','yyyy-MM-dd') datetime('2021-01-15','InputFormat','yyyy-MM-dd')]);
@@ -165,7 +165,7 @@ ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
 plot(SOLACE.time, SOLACE.FCO2,'-m','MarkerSize',2)
 hold on
 yline(0)
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'or','MarkerSize',4)
+plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'or','MarkerSize',4)
 plot(SOTS2021.time, SOTS2021.FCO2,'+c','MarkerSize',4)
 legend('SOLACE','0-line','SOFS','SOTS2021','Orientation','horizontal','Location','best');
 hold off
@@ -181,13 +181,13 @@ yyaxis left
 plot(SOLACE.time,SOLACE.lat,'-')
 hold on
 plot(SOTS2021.time,SOTS2021.lat,'+','MarkerSize',4)
-plot(mooring_data.dxCO2_time,mooring_data.wsp_lat,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_lat,'o','MarkerSize',2)
 ylabel('Latitude')
 
 yyaxis right
 plot(SOLACE.time,SOLACE.lon,'-')
 plot(SOTS2021.time,SOTS2021.lon,'+','MarkerSize',2)
-plot(mooring_data.dxCO2_time,mooring_data.wsp_lon,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_lon,'o','MarkerSize',2)
 ylabel('Longitude')
 legend('SOLACE','SOTS2021','SOFS','Orientation','horizontal','Location','best')
 % xlim([datetime('2020-12-04','InputFormat','yyyy-MM-dd') datetime('2021-01-15','InputFormat','yyyy-MM-dd')]);
@@ -199,7 +199,7 @@ ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
 plot(SOLACE.time, SOLACE.FCO2,'-','MarkerSize',2)
 hold on
 yline(0)
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'or','MarkerSize',4)
+plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'or','MarkerSize',4)
 plot(SOTS2021.time, SOTS2021.FCO2,'+c','MarkerSize',4)
 % legend('SOLACE','0-line','SOFS','SOTS2021','Orientation','horizontal','Location','bestoutside');
 hold off
@@ -212,13 +212,13 @@ yyaxis left
 plot(SOLACE.time,SOLACE.PSAL,'-')
 hold on
 plot(SOTS2021.time,SOTS2021.PSAL,'+','MarkerSize',4)
-plot(mooring_data.dxCO2_time,mooring_data.dxCO2_PSAL,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_PSAL,'o','MarkerSize',2)
 ylabel('PSAL')
 
 yyaxis right
 plot(SOLACE.time,SOLACE.TEMP,'-')
 plot(SOTS2021.time,SOTS2021.TEMP,'+','MarkerSize',2)
-plot(mooring_data.dxCO2_time,mooring_data.dxCO2_SST,'o','MarkerSize',2)
+plot(mooring_data.xCO2_time,mooring_data.xCO2_SST,'o','MarkerSize',2)
 ylabel('TEMP')
 % legend('SOLACE','SOTS2021','SOFS','Orientation','horizontal','Location','bestoutside')
 % xlim([datetime('2020-12-04','InputFormat','yyyy-MM-dd') datetime('2021-01-15','InputFormat','yyyy-MM-dd')]);
@@ -247,9 +247,66 @@ ylabel('Air-sea CO2 flux mmol m^-2 d^-1')
 plot(TEMPO.time, TEMPO.FCO2,'-m','MarkerSize',4)
 hold on
 yline(0)
-plot(mooring_data.dxCO2_time, mooring_data.F_CO2,'or','MarkerSize',4)
+plot(mooring_data.xCO2_time, mooring_data.flux_pCO2,'or','MarkerSize',4)
 legend('TEMPO','0-line','SOFS','Orientation','horizontal','Location','best');
 hold off
 xlim([datetime('2021-01-29','InputFormat','yyyy-MM-dd') datetime('2021-03-26','InputFormat','yyyy-MM-dd')]);
 ylim([-70 20])
 xlabel('Time')
+
+
+%%%% mooring monthly average fluxes vs float monthly average fluxes
+load('SOTS_float_data.mat')
+load('mooring_data.mat')
+
+figure()
+subplot(2,1,1)
+plot([1:12],(mooring_data.pCO2_2021_monthly_flux/1000)*365,'-r')
+hold on
+plot([1:12],(mooring_data.pCO2_2020_monthly_flux/1000)*365,'-b')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LD_mo_ave/1000)*365,'--g')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LS_mo_ave/1000)*365,'--c','MarkerSize',8)
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_WD_mo_ave/1000)*365,'--k')
+hold off
+legend('mooring 2021', 'mooring 2020', 'float LD 2020', 'float LS 2020',...
+    'float WD 2020')
+xlabel('Month')
+ylabel('air sea flux mol m^-2 yr^-^1')
+xticks([0:13])
+xticklabels({'', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',...
+    'Sep', 'Oct', 'Nov', 'Dec',''}) 
+xlim([0 13])
+yline(0)
+
+subplot(2,1,2)
+yyaxis left
+plot(SOTS_float_data.time,SOTS_float_data.lat-SOTS_float_data.mooring_lat,'-r')
+hold on
+yline(0)
+hold off
+ylabel('float lat - mooring lat')
+yyaxis right
+plot(SOTS_float_data.time,SOTS_float_data.lon-SOTS_float_data.mooring_lon,'-b')
+ylabel('float lon - mooring lon')
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% comparing Cape Grim xCO2 dry air to mooring xCO2 dry air
+figure()
+title('xCO_2 in air')
+plot(SOTS_float_data.time, SOTS_float_data.CG_xCO2_uatm,'*b')
+hold on
+plot(mooring_data.xCO2_time, mooring_data.xCO2_air,'or','MarkerSize',2)
+legend('Cape Grim xCO2 dry air','SOFS xCO2 dry air')
+xlabel('Time')
+ylabel('xCO_2 umol/mol')
+
+
+%%%% now comparing the converted pCO2 values
+figure()
+title('pCO_2 in air')
+plot(SOTS_float_data.time, SOTS_float_data.pCO2_uatm,'*b')
+hold on
+plot(mooring_data.xCO2_time, mooring_data.pCO2_air,'or','MarkerSize',2)
+legend('Cape Grim pCO2','SOFS pCO2')
+xlabel('Time')
+ylabel('pCO_2 uatm')

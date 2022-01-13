@@ -110,6 +110,60 @@ EraLat = ncread(file, 'latitude');
 EraLon = ncread(file, 'longitude');
 
 
+%%%%% before pCO2 is calculated from float pH and estimated Alk
+%%%%% a bias correction needs to be made to bring float pH (akin to
+%%%%% photospectormetrically measured pH) - based pCO2 calculation
+%%%%% in line with measured pCO2 (or pCO2 estimated from DIC and Alk)
+%bias correction of float = -0.034529 * pH(25C) + 0.26709
+% Williams, 2017
+
+
+%%%%% set the reference depth (1500m as per Williams, 2017)
+ref_depth = ones(1,size(SOTS_float_data.pH,2))*1500;
+%%% set the tolerance to the reference depth
+ref_depth_t = 100;
+%%% find the index of each float profile where the depth is closest to the
+%%% reference depth
+for i=1:size(SOTS_float_data.pH,2)
+    pres_ref_id(i) = knnsearch(SOTS_float_data.pres(:,i), ref_depth(i));
+    pres_ref(i) = SOTS_float_data.pres(pres_ref_id(i),i);
+end
+
+%%% take out the depth that are not within the depth tolerance
+pres_ref(pres_ref >= (ref_depth(1) + ref_depth_t))=NaN;
+pres_ref(pres_ref <= (ref_depth(1) - ref_depth_t))=NaN;
+
+%%% find the profile numbers where we have a deep enough measurement
+pH_ref_profile_ind=find(~isnan(pres_ref));
+
+pH_ref_depth_ind=pres_ref_id(pH_ref_profile_ind);
+
+%%% find the pH at the reference depths
+for i=1:length(pH_ref_profile_ind)
+    pH_ref.pH(i) = SOTS_float_data.pH(pH_ref_depth_ind(i),pH_ref_profile_ind(i));
+    pH_ref.temp(i) = SOTS_float_data.TEMP(pH_ref_depth_ind(i),pH_ref_profile_ind(i));
+    pH_ref.pres(i) = SOTS_float_data.pres(pH_ref_depth_ind(i),pH_ref_profile_ind(i));
+    pH_ref.psal(i) = SOTS_float_data.psal(pH_ref_depth_ind(i),pH_ref_profile_ind(i));
+    pH_ref.profile_no(i) = pH_ref_profile_ind(i);
+    %%%% calculate the pH at 25C and 0dbar
+    [pH_25] = CO2SYS(2290,pH_ref.pH(i),1,3,pH_ref.psal(i),...
+        pH_ref.temp(i),25, pH_ref.pres(i),0,2.8,0.9,2,0,1,10,1,2,2);
+    pH_ref.pH_25(i) = pH_25(21);
+    %%% calculate the bias correction
+    pH_ref.pH_corr(i) = -0.034529 * pH_ref.pH_25(i) + 0.26709;
+end
+
+%%%% now each pH profile has to be corrected by adding the bias
+%%% I will use the correction that is closest to each profile
+for i = 1:size(SOTS_float_data.pH,2)
+%for i=15   
+    ind = knnsearch(pH_ref.profile_no(:),i);
+    SOTS_float_data.pH_LD_corr(:,i) = SOTS_float_data.pH_LIR_Deep(:,i)+pH_ref.pH_corr(ind);
+    SOTS_float_data.pH_LS_corr(:,i) = SOTS_float_data.pH_LIR_Shallow(:,i)+pH_ref.pH_corr(ind);
+    SOTS_float_data.pH_WD_corr(:,i) = SOTS_float_data.pH_Williams_Deep(:,i)+pH_ref.pH_corr(ind);
+end
+
+
 % convert float Salinity, oxygen and temperature into alkalinity with LIAR
 Alk_LIAR=[];
 Alk_LIAR_20=[];
@@ -119,6 +173,10 @@ SOTS_float_data.Alk_pres=[];
 pH_L_D_20 =[];
 pH_L_S_20 =[];
 pH_W_D_20 =[];
+pH_L_D_corr_20 =[];
+pH_L_S_corr_20 =[];
+pH_W_D_corr_20 =[];
+
 S_20 = [];
 temp_20 = [];
 pres_20 =[];
@@ -165,6 +223,13 @@ for i = 1:fs(2)
     pH_L_S_20(end+1,1) = p_L_S(2);
     p_W_D = accumarray(c,SOTS_float_data.pH_Williams_Deep(msk,i),[],@(x)mean(x,'omitnan'));
     pH_W_D_20(end+1,1) = p_W_D(2);
+    p_L_D_corr = accumarray(c,SOTS_float_data.pH_LD_corr(msk,i),[],@(x)mean(x,'omitnan'));
+    pH_L_D_corr_20(end+1,1) = p_L_D_corr(2); 
+    p_L_S_corr = accumarray(c,SOTS_float_data.pH_LS_corr(msk,i),[],@(x)mean(x,'omitnan'));
+    pH_L_S_corr_20(end+1,1) = p_L_S_corr(2); 
+    p_W_D_corr = accumarray(c,SOTS_float_data.pH_WD_corr(msk,i),[],@(x)mean(x,'omitnan'));
+    pH_W_D_corr_20(end+1,1) = p_W_D_corr(2); 
+    
     s = accumarray(c,S(msk,i),[],@(x)mean(x,'omitnan'));
     S_20(end+1,1) = s(2);
     pp = accumarray(c,pres(msk,i),[],@(x)mean(x,'omitnan'));
@@ -183,6 +248,7 @@ SOTS_float_data.Alk_LIAR = Alk_LIAR;
 SOTS_float_data.Alk_ES = Alk_ES;
 
 
+
 %Si ave from RAS SOFS8 2.8 umol/kg
 %PO4 ave from RAS SOFS8 0.9
 %NH4 set to 2 umol/kg
@@ -194,18 +260,22 @@ SOTS_float_data.Alk_ES = Alk_ES;
 for i=1:length(Alk_LIAR_20)
     [DATA_L_D, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_L_D(i) = DATA_L_D(22); % uatm
+    
     [DATA_L_D_20, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),20,20,2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_L_D_20m(i) = DATA_L_D_20(22); % uatm
+    
     [DATA_L_S, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_L_S(i) = DATA_L_S(22); % uatm
-    
-%     pH_L_S_20_corr(i) = -0.034529 * pH_L_S_20(i)+ 0.26709;
-%     [DATA_L_S_corr, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_20_corr(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
-%     SOTS_float_data.pCO2_L_S_corr(i) = DATA_L_S_corr(22); % uatm
-
     [DATA_W_D, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_W_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_W_D(i) = DATA_W_D(22); % uatm 
     
+    [DATA_L_D_corr, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_D_corr_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
+    SOTS_float_data.pCO2_L_D_corr(i) = DATA_L_D_corr(22); % uatm
+    [DATA_L_S_corr, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_L_S_corr_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
+    SOTS_float_data.pCO2_L_S_corr(i) = DATA_L_S_corr(22); % uatm
+    [DATA_W_D_corr, HEADERS, NICEHEADERS]  = CO2SYS(Alk_LIAR_20(i),pH_W_D_corr_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
+    SOTS_float_data.pCO2_W_D_corr(i) = DATA_W_D_corr(22); % uatm
+
     [DATA_L_D_ES, HEADERS, NICEHEADERS]  = CO2SYS(Alk_ES_20(i),pH_L_D_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
     SOTS_float_data.pCO2_L_D_ES(i) = DATA_L_D_ES(22); % uatm
     [DATA_L_S_ES, HEADERS, NICEHEADERS]  = CO2SYS(Alk_ES_20(i),pH_L_S_20(i),1,3,S_20(i),temp_20(i),temp_20(i),pres_20(i),pres_20(i),2.8,0.9,2,0,1,10,1,2,2);
@@ -221,13 +291,15 @@ for i=1:length(Alk_LIAR_20)
     SOTS_float_data.pH_L_D_20(i) = pH_L_D_20(i);
     SOTS_float_data.pH_L_S_20(i) = pH_L_S_20(i);
     SOTS_float_data.pH_W_D_20(i) = pH_W_D_20(i);
-%     SOTS_float_data.pH_L_S_20_cor(i) = pH_L_S_20_corr(i);
+    SOTS_float_data.pH_L_D_20_corr(i) = pH_L_S_corr_20(i);
+    SOTS_float_data.pH_L_S_20_corr(i) = pH_L_S_corr_20(i);
+    SOTS_float_data.pH_W_D_20_corr(i) = pH_W_D_corr_20(i);
+        
     SOTS_float_data.Alk_LIAR_20(i) = Alk_LIAR_20(i);
     SOTS_float_data.Alk_ES_20(i) = Alk_ES_20(i);
     SOTS_float_data.pres_20(i) = pres_20(i);
 end
 
-%bias correction of float pH = -0.034529 * pH(25C) + 0.26709
 
 for i = 1:fs(2)
 %for i = 156   
@@ -256,12 +328,19 @@ for i = 1:fs(2)
     DpCO2_L_D_20m = SOTS_float_data.pCO2_L_D_20m(i)-pCO2_uatm;
     DpCO2_L_S = SOTS_float_data.pCO2_L_S(i)-pCO2_uatm;
     DpCO2_W_D = SOTS_float_data.pCO2_W_D(i)-pCO2_uatm;
-%     DpCO2_L_S_corr = SOTS_float_data.pCO2_L_S_corr(i)-pCO2_uatm;
+    DpCO2_L_D_corr = SOTS_float_data.pCO2_L_D_corr(i)-pCO2_uatm;
+    DpCO2_L_S_corr = SOTS_float_data.pCO2_L_S_corr(i)-pCO2_uatm;
+    DpCO2_W_D_corr = SOTS_float_data.pCO2_W_D_corr(i)-pCO2_uatm;
+    
     [F_CO2_float_L_D]=FCO2_CWE(DpCO2_L_D,temp_20(i),S_20(i),wsp_f);
     [F_CO2_float_L_D_20m]=FCO2_CWE(DpCO2_L_D_20m,temp_20(i),S_20(i),wsp_f);
     [F_CO2_float_L_S]=FCO2_CWE(DpCO2_L_S,temp_20(i),S_20(i),wsp_f);
     [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,temp_20(i),S_20(i),wsp_f);
-%     [F_CO2_float_L_S_corr]=FCO2_CWE(DpCO2_L_S_corr,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_L_D_corr]=FCO2_CWE(DpCO2_L_D_corr,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_L_S_corr]=FCO2_CWE(DpCO2_L_S_corr,temp_20(i),S_20(i),wsp_f);
+    [F_CO2_float_W_D_corr]=FCO2_CWE(DpCO2_W_D_corr,temp_20(i),S_20(i),wsp_f);
+
+
 %     [F_CO2_float_W_D]=FCO2_CWE(DpCO2_W_D,t_2_f,S_20(i),wsp_f);
     DpCO2_L_D_ES = SOTS_float_data.pCO2_L_D_ES(i)-pCO2_uatm;
     DpCO2_L_S_ES = SOTS_float_data.pCO2_L_S_ES(i)-pCO2_uatm;
@@ -275,12 +354,17 @@ for i = 1:fs(2)
     SOTS_float_data.flux_L_D(i) = F_CO2_float_L_D;
     SOTS_float_data.flux_L_D_20m(i) = F_CO2_float_L_D_20m;
     SOTS_float_data.flux_L_S(i) = F_CO2_float_L_S;
-%     SOTS_float_data.flux_L_S_corr(i) = F_CO2_float_L_S_corr;
     SOTS_float_data.flux_W_D(i) = F_CO2_float_W_D;
+    SOTS_float_data.flux_L_D_corr(i) = F_CO2_float_L_D_corr;
+    SOTS_float_data.flux_L_S_corr(i) = F_CO2_float_L_S_corr;
+    SOTS_float_data.flux_W_D_corr(i) = F_CO2_float_W_D_corr;
+    
+
     SOTS_float_data.flux_L_D_ES(i) = F_CO2_float_L_D_ES;
 %     SOTS_float_data.flux_L_D_ES_airtemp(i) = F_CO2_float_L_D_ES_airtemp;
     SOTS_float_data.flux_L_S_ES(i) = F_CO2_float_L_S_ES;
     SOTS_float_data.flux_W_D_ES(i) = F_CO2_float_W_D_ES;
+    
     SOTS_float_data.pCO2_uatm(i) = pCO2_uatm;
     SOTS_float_data.CG_xCO2_uatm(i) = CGdata_interp.ppm_spl(idx_C);
     SOTS_float_data.wsp(i) = wsp_f;
@@ -291,11 +375,14 @@ SOTS_float_data.Month = month(SOTS_float_data.time);
 
 % sort it so that I can use accumarray and get the order of the months
 SOTS_float_data.data_comp = table(SOTS_float_data.Month',SOTS_float_data.time',SOTS_float_data.pH_L_D_20',...
-    SOTS_float_data.pH_L_S_20', SOTS_float_data.pH_W_D_20', SOTS_float_data.Alk_LIAR_20',...
+    SOTS_float_data.pH_L_S_20', SOTS_float_data.pH_W_D_20',SOTS_float_data.pH_L_D_20_corr',...
+    SOTS_float_data.pH_L_S_20_corr',SOTS_float_data.pH_W_D_20_corr', SOTS_float_data.Alk_LIAR_20',...
     SOTS_float_data.Alk_ES_20', SOTS_float_data.flux_L_D', SOTS_float_data.flux_L_S',...
-    SOTS_float_data.flux_W_D', SOTS_float_data.flux_L_D_ES', SOTS_float_data.flux_L_S_ES',...
+    SOTS_float_data.flux_W_D',SOTS_float_data.flux_L_D_corr',SOTS_float_data.flux_L_S_corr',...
+    SOTS_float_data.flux_W_D_corr',SOTS_float_data.flux_L_D_ES', SOTS_float_data.flux_L_S_ES',...
     SOTS_float_data.flux_W_D_ES', 'VariableNames',{'Month','Time','pH_LD_20','pH_LS_20',...
-    'pH_WD_20','Alk_LIAR_20','Alk_ES_20','flux_LD','flux_LS','flux_WD',...
+    'pH_WD_20','pH_LD_20_corr','pH_LS_20_corr','pH_WD_20_corr','Alk_LIAR_20','Alk_ES_20',...
+    'flux_LD','flux_LS','flux_WD','flux_LD_corr','flux_LS_corr','flux_WD_corr'...
     'flux_LD_ES','flux_LS_ES','flux_WD_ES'});
 
 SOTS_float_data.data_sorted = sortrows(SOTS_float_data.data_comp,1);
@@ -303,11 +390,19 @@ SOTS_float_data.data_sorted = sortrows(SOTS_float_data.data_comp,1);
 SOTS_float_data.pH_LD_20_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_LD_20,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.pH_LS_20_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_LS_20,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.pH_WD_20_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_WD_20,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.pH_LD_20_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_LD_20_corr,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.pH_LS_20_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_LS_20_corr,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.pH_WD_20_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.pH_WD_20_corr,[],@(x)mean(x,'omitnan'));
+
 SOTS_float_data.Alk_LIAR_20_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.Alk_LIAR_20,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.Alk_ES_20_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.Alk_ES_20,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.flux_LD_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LD,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.flux_LS_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LS,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.flux_WD_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_WD,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.flux_LD_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LD_corr,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.flux_LS_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LS_corr,[],@(x)mean(x,'omitnan'));
+SOTS_float_data.flux_WD_corr_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_WD_corr,[],@(x)mean(x,'omitnan'));
+
 SOTS_float_data.flux_LD_ES_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LD_ES,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.flux_LS_ES_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_LS_ES,[],@(x)mean(x,'omitnan'));
 SOTS_float_data.flux_WD_ES_mo_ave = accumarray(SOTS_float_data.data_sorted.Month,SOTS_float_data.data_sorted.flux_WD_ES,[],@(x)mean(x,'omitnan'));
@@ -331,7 +426,7 @@ for i = 1:fs(2)
 end
 
 
-clearvars -except SOTS_float_data
+clearvars -except SOTS_float_data pH_ref CGdata_interp
 
 path =('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper');
 cd(path)

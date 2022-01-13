@@ -169,7 +169,8 @@ for i = 1:6
         hold on
         plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
         plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
-        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        plot(SOTS_float_data.pH_LD_corr(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^m', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',12)
         ylabel('Depth dbar')
         xlim([7.9 8.2])
         ylim([0 100])
@@ -204,7 +205,8 @@ for i = 1:6
         hold on
         plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
         plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
-        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        plot(SOTS_float_data.pH_LD_corr(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^m', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',12)
         ylabel('Depth dbar')
         xlim([7.9 8.2])
         ylim([0 100])
@@ -239,7 +241,8 @@ for i = 1:2
         hold on
         plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^g', 'MarkerSize',2)
         plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^c', 'MarkerSize',2)
-        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',10)
+        plot(SOTS_float_data.pH_LD_corr(:,month(SOTS_float_data.time)==n(i)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==n(i)),'^m', 'MarkerSize',2)
+        plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==n(i)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==n(i)),'.b','MarkerSize',12)
         ylabel('Depth dbar')
         xlim([7.9 8.2])
         ylim([0 100])
@@ -470,11 +473,14 @@ hold off
 %%%%% Alkalinity estimates
 
 figure()
-plot(SOTS_float_data.time,SOTS_float_data.pCO2_atm,'^k','MarkerSize',4)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_uatm,'^k','MarkerSize',4)
 hold on
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D,'.r','MarkerSize',6)
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S,'.g','MarkerSize',6)
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D,'.c','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D_corr,'+r','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S_corr,'+g','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D_corr,'+c','MarkerSize',6)
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D_ES,'*r','MarkerSize',6)
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S_ES,'*g','MarkerSize',6)
 plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D_ES,'*c','MarkerSize',6)
@@ -482,10 +488,10 @@ hold off
 xlabel('Time')
 xlim([datetime('01-12-2020','inputFormat','dd-MM-yyyy') datetime('15-01-2022','inputFormat','dd-MM-yyyy')])
 ylabel('pCO_2 uatm')
-legend('Cape Grim atm pCO_2','float pH - LD - LIAR','float pH - LS - LIAR',...
-    'float pH - WD - LIAR', 'float pH - LD - ES', 'float pH - LS - ES',...
-    'float pH - WD - ES','Orientation','horizontal','Location','southoutside',...
-    'FontSize',8)
+legend('Cape Grim atm pCO_2','float pH-LD-LIAR','float pH-LS-LIAR',...
+    'float pH-WD-LIAR','float pH LD corr','float pH LS corr','float pH WD corr',...
+    'float pH-LD-ES', 'float pH-LS-ES','float pH-WD-ES','Orientation',...
+    'horizontal','Location','southoutside','FontSize',8)
 
 
 %%%%%%%%%%%%%%%%%%%

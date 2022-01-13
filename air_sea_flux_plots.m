@@ -267,9 +267,13 @@ plot([1:12],(mooring_data.pCO2_2020_monthly_flux/1000)*365,'-b')
 plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LD_mo_ave/1000)*365,'--g')
 plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LS_mo_ave/1000)*365,'--c','MarkerSize',8)
 plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_WD_mo_ave/1000)*365,'--k')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LD_corr_mo_ave/1000)*365,'--og')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LS_corr_mo_ave/1000)*365,'--oc','MarkerSize',8)
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_WD_corr_mo_ave/1000)*365,'--ok')
+
 hold off
-legend('mooring 2021', 'mooring 2020', 'float LD 2020', 'float LS 2020',...
-    'float WD 2020')
+legend('mooring 2021', 'mooring 2020', 'float LD 2021', 'float LS 2021',...
+    'float WD 2021','float LDcorr 2021','float LScorr 2021','float WDcorr 2021')
 xlabel('Month')
 ylabel('air sea flux mol m^-2 yr^-^1')
 xticks([0:13])
@@ -310,3 +314,28 @@ plot(mooring_data.xCO2_time, mooring_data.pCO2_air,'or','MarkerSize',2)
 legend('Cape Grim pCO2','SOFS pCO2')
 xlabel('Time')
 ylabel('pCO_2 uatm')
+
+%%%%%%%%%%%%%%%%%%%%%
+%%%% comparison between float based pCO2_sw calculations and mooring
+%%%  pCO2_sw as measured
+
+load('mooring_data.mat')
+figure()
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D,'.r','MarkerSize',6)
+hold on
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S,'.g','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D,'.c','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_D_corr,'+r','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_L_S_corr,'+g','MarkerSize',6)
+plot(SOTS_float_data.time,SOTS_float_data.pCO2_W_D_corr,'+c','MarkerSize',6)
+plot(mooring_data.xCO2_time, mooring_data.pCO2_sw,'ob','MarkerSize',2)
+hold off
+title('pCO_2 sw')
+xlabel('Time')
+xlim([datetime('01-12-2020','inputFormat','dd-MM-yyyy') datetime('15-01-2022','inputFormat','dd-MM-yyyy')])
+ylabel('pCO_2 uatm')
+legend('float pCO_2- LD','float pH - LS','float pH - WD',...
+    'float pCO_2-LD-corr','float pCO_2-LS-corr','float pCO_2-WD-corr',...
+    'mooring pCO_2','Orientation','horizontal','Location',...
+    'southoutside','FontSize',8)
+

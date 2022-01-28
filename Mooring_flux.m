@@ -10,6 +10,7 @@
 
 % patch together daily files, with hourly obs for windspeed and flags
 % http://thredds.aodn.org.au/thredds/catalog/IMOS/DWM/ASFS/SOFS/Surface_fluxes/Real-time/2020_daily/catalog.html
+clear all
 
 addpath ('C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper')
 
@@ -25,6 +26,8 @@ mooring_data.wsp_qc =[];
 mooring_data.wsp_time =[];
 mooring_data.wsp_lat =[];
 mooring_data.wsp_lon =[];
+mooring_data.wsp_airtemp =[];
+mooring_data.wsp_airtemp_qc = [];
 
 for i = 1:length(nc_files)
     
@@ -35,13 +38,17 @@ for i = 1:length(nc_files)
     wsp_time = ncread(file, 'TIME') + datetime(1950,1,1);
     wsp_lat = ncread(file, 'LATITUDE');
     wsp_lon = ncread(file, 'LONGITUDE');
+    wsp_airtemp = ncread(file, 'AIRT');
+    wsp_airtemp_qc = ncread(file, 'AIRT_FLAG');
     
     mooring_data.wsp = [mooring_data.wsp; wsp(:)];
     mooring_data.wsp_qc = [mooring_data.wsp_qc; wsp_qc(:)];
     mooring_data.wsp_time = [mooring_data.wsp_time; wsp_time(:)];
     mooring_data.wsp_lat = [mooring_data.wsp_lat; wsp_lat(:)];
     mooring_data.wsp_lon = [mooring_data.wsp_lon; wsp_lon(:)];
-   
+    mooring_data.wsp_airtemp = [mooring_data.wsp_airtemp; wsp_airtemp(:)];
+    mooring_data.wsp_airtemp_qc = [mooring_data.wsp_airtemp_qc; wsp_airtemp_qc(:)];
+
 end
 
 % download data from
@@ -116,7 +123,7 @@ for i = 1:length(mooring_data.xCO2_time)
     mooring_data.wsp_pCO2_time = mooring_data.wsp_time(l);
     mooring_data.wsp_pCO2_lat = mooring_data.wsp_lat(l);
     mooring_data.wsp_pCO2_lon = mooring_data.wsp_lon(l);
-
+    mooring_data.wsp_pCO2_airtemp = mooring_data.wsp_airtemp(l);
 end
 
 %%% for some reason there is no windspeed mooring data between 
@@ -130,6 +137,12 @@ idx_end = idx(end) -1;
 mooring_data.wsp_gap_lat = mooring_data.xCO2_lat(idx_start:idx_end);
 mooring_data.wsp_gap_lon = mooring_data.xCO2_lon(idx_start:idx_end);
 mooring_data.wsp_gap_time = mooring_data.xCO2_time(idx_start:idx_end);
+
+% % 4th Jan to currently 26th Jan 2022 there is no air temperature
+% idx_2 = find(datenum(mooring_data.xCO2_time) == datenum(datetime('04-01-2022 00:17:00','InputFormat','dd-MM-yyyy HH:mm:ss')));
+% idx_2_start = idx_2(1) +1;
+% idx_2 = find(datenum(mooring_data.wsp_pCO2_time) == datenum(datetime('26-01-2022 15:17:00','InputFormat','dd-MM-yyyy HH:mm:ss')));
+% idx_end_2 = idx_2(end) -1;
 
 
 % read the ERA5 data for the area of the float
@@ -164,7 +177,9 @@ mooring_data.wsp_pCO2(idx_start:idx_end)=mooring_data.wsp_gap;
 
 mooring_data.xCO2_temp_air(idx_start:idx_end)=mooring_data.air_temp_gap;
 
+% fill the gap in Pete's file with data from Eric's files
 
+mooring_data.xCO2_temp_air(isnan(mooring_data.xCO2_temp_air)) = mooring_data.wsp_pCO2_airtemp(isnan(mooring_data.xCO2_temp_air));
 
 % convert mole fraction in dry air into pCO2
 % for seawater xCO2
@@ -208,9 +223,14 @@ mooring_data.xCO2_year = year(mooring_data.xCO2_time);
 % mooring_data.xCO2_doy = day(mooring_data.xCO2_time,'dayofyear');
 mooring_data.pCO2_2020_monthly_flux = accumarray(mooring_data.xCO2_month(mooring_data.xCO2_year==2020),mooring_data.flux_pCO2(mooring_data.xCO2_year==2020),[],@(x)mean(x,'omitnan'));
 mooring_data.pCO2_2020_monthly_flux(mooring_data.pCO2_2020_monthly_flux==0)=NaN;
+mooring_data.pCO2_2020_SD_flux = accumarray(mooring_data.xCO2_month(mooring_data.xCO2_year==2020),mooring_data.flux_pCO2(mooring_data.xCO2_year==2020),[],@(x)std(x,'omitnan'));
+mooring_data.pCO2_2020_SD_flux(mooring_data.pCO2_2020_monthly_flux==0)=NaN;
+
 
 mooring_data.pCO2_2021_monthly_flux = accumarray(mooring_data.xCO2_month(mooring_data.xCO2_year==2021),mooring_data.flux_pCO2(mooring_data.xCO2_year==2021),[],@(x)mean(x,'omitnan'));
 mooring_data.pCO2_2021_monthly_flux(mooring_data.pCO2_2021_monthly_flux==0)=NaN;
+mooring_data.pCO2_2021_SD_flux = accumarray(mooring_data.xCO2_month(mooring_data.xCO2_year==2021),mooring_data.flux_pCO2(mooring_data.xCO2_year==2021),[],@(x)std(x,'omitnan'));
+mooring_data.pCO2_2021_SD_flux(mooring_data.pCO2_2021_monthly_flux==0)=NaN;
 
 
 clearvars -except mooring_data
@@ -302,8 +322,20 @@ hold on
 plot([1:12],(mooring_data.pCO2_2020_monthly_flux/1000)*365,'*b')
 hold off
 ylabel('air sea flux mol m^-2 y^-^1')
+legend('2021','2020')
+
 
 xticks([0:13])
 xticklabels({'', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',...
     'Sep', 'Oct', 'Nov', 'Dec',''}) 
 xlim([0 13])
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% comparing air temperature from Pete's file vs Eric's files
+figure()
+plot(mooring_data.wsp_pCO2_time,mooring_data.wsp_pCO2_airtemp,'or')
+hold on
+plot(mooring_data.xCO2_time,mooring_data.xCO2_temp_air,'*b')
+xlabel('Time')
+ylabel('air temperature')
+legend('Erics file', 'Petes file')

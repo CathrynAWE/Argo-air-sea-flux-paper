@@ -183,7 +183,8 @@ mooring_data.xCO2_temp_air(isnan(mooring_data.xCO2_temp_air)) = mooring_data.wsp
 
 % convert mole fraction in dry air into pCO2
 % for seawater xCO2
-% pCO2_sw = xCO2_SW (umol/mol) * (p - pH2O) % result in uatm
+% pCO2_sw = xCO2_SW (umol/mol) * (p - pH2O) % result in uatm, p is the air
+% pressure
 % pH20_sw = exp(24.4543 - (6745.09/((T_C)+273.16)) - 4.8489 *
 % log(((T_C)+273.16)/100) - 0.000544*PSAL) % result in atm, T converted to
 % K
@@ -200,7 +201,7 @@ mooring_data.pCO2_sw = mooring_data.xCO2_sw .* ((mooring_data.xCO2_pres.*0.00986
 % pH20_air = 6.11 * 10^((7.5*T)/(237.3+T)) % result in mbar or hPa, T in C
 % pH20_air converted to kPa = pH20/10  
 
-mooring_data.pH2O_air = (6.11 * 10.^((7.6 .* mooring_data.xCO2_temp_air)./(273.3+mooring_data.xCO2_temp_air)))/10;
+mooring_data.pH2O_air = (6.11 * 10.^((7.5 .* mooring_data.xCO2_temp_air)./(273.3+mooring_data.xCO2_temp_air)))/10;
 % result in kPa
 
 % need to translate delta p into atm from kPa by multiplying with*0.009869233

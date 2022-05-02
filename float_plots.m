@@ -217,62 +217,62 @@ legend('Triangle float','. CTD','Orientation','horizontal','Location','bestoutsi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% all float pH vs CTD casts at SOTS
-% figure()
-% for i = 1:6
-%     subplot(3,2,i)
-%     plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^r', 'MarkerSize',2)
-%     hold on
-%     plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^g', 'MarkerSize',2)
+figure()
+for i = 1:6
+    subplot(3,2,i)
+    plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^r', 'MarkerSize',2)
+    hold on
+    plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^g', 'MarkerSize',2)
 %     plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==i),SOTS_float_data.pres(:,month(SOTS_float_data.time)==i),'^c', 'MarkerSize',2)
-%     plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==i), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==i),'.b','MarkerSize',10)
-%     if i ==1
-%         xlabel('pH total scale - Jan')
-%     elseif i ==2
-%         xlabel('pH total scale - Feb')
-%     elseif i==3
-%         xlabel('pH total scale - Mar')
-%     elseif i==4
-%         xlabel('pH total scale - Apr')
-%     elseif i==5
-%         xlabel('pH total scale - May')
-%     elseif i==6
-%         xlabel('pH total scale - June')
-%     end
-%     ylabel('Depth dbar')
+    plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==i), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==i),'.b','MarkerSize',10)
+    if i ==1
+        xlabel('pH total scale - Jan')
+    elseif i ==2
+        xlabel('pH total scale - Feb')
+    elseif i==3
+        xlabel('pH total scale - Mar')
+    elseif i==4
+        xlabel('pH total scale - Apr')
+    elseif i==5
+        xlabel('pH total scale - May')
+    elseif i==6
+        xlabel('pH total scale - June')
+    end
+    ylabel('Depth dbar')
 %     xlim([7.9 8.2])
-%     ylim([0 100])
-%     set(gca, 'YDir','reverse')
-%     
-% end
-% 
-% figure()
-% for i = 1:6
-%     subplot(3,2,i)
-%     plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^r', 'MarkerSize',2)
-%     hold on
-%     plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^g', 'MarkerSize',2)
+    ylim([0 2000])
+    set(gca, 'YDir','reverse')
+    
+end
+
+figure()
+for i = 1:6
+    subplot(3,2,i)
+    plot(SOTS_float_data.pH_LIR_Deep(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^r', 'MarkerSize',2)
+    hold on
+    plot(SOTS_float_data.pH_LIR_Shallow(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^g', 'MarkerSize',2)
 %     plot(SOTS_float_data.pH_Williams_Deep(:,month(SOTS_float_data.time)==(i+6)),SOTS_float_data.pres(:,month(SOTS_float_data.time)==(i+6)),'^c', 'MarkerSize',2)
-%     plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==(i+6)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==(i+6)),'.b','MarkerSize',10)
-%     if i ==1
-%         xlabel('pH total scale - July')
-%     elseif i ==2
-%         xlabel('pH total scale - Aug')
-%     elseif i==3
-%         xlabel('pH total scale - Sep')
-%     elseif i==4
-%         xlabel('pH total scale - Oct')
-%     elseif i==5
-%         xlabel('pH total scale - Nov')
-%     elseif i==6
-%         xlabel('pH total scale - Dec')
-%     end
-%     ylabel('Depth dbar')
+    plot(CTD_data.raw_data.pH(month(CTD_data.raw_data.date)==(i+6)), CTD_data.raw_data.Depth(month(CTD_data.raw_data.date)==(i+6)),'.b','MarkerSize',10)
+    if i ==1
+        xlabel('pH total scale - July')
+    elseif i ==2
+        xlabel('pH total scale - Aug')
+    elseif i==3
+        xlabel('pH total scale - Sep')
+    elseif i==4
+        xlabel('pH total scale - Oct')
+    elseif i==5
+        xlabel('pH total scale - Nov')
+    elseif i==6
+        xlabel('pH total scale - Dec')
+    end
+    ylabel('Depth dbar')
 %     xlim([7.9 8.2])
-%     ylim([0 100])
-%     set(gca, 'YDir','reverse')
-%     
-% end
-% 
+    ylim([0 2000])
+    set(gca, 'YDir','reverse')
+    
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% all float pH vs CTD casts at SOTS with temp / sal trace
 %%% Mar, Apr, July, Aug, Oct, Nov, Dec

@@ -2,8 +2,8 @@
 % CS, 3.6.2019
 
 %float_ID = '5904686'; %55S complimentary float
-%  float_ID = '5906623'; % SOTS
-float_ID = '5906624'; % 55S
+ float_ID = '5906623'; % SOTS
+% float_ID = '5906624'; % 55S
 
 
 % connect to server

@@ -402,8 +402,8 @@ hold on
 % plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LD_mo_ave/1000)*365,'--g')
 % plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LS_mo_ave/1000)*365,'--c','MarkerSize',8)
 % plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_WD_mo_ave/1000)*365,'--k')
-plot(data.mo_ave_month, (data.flux_LD_corr_mo_ave/1000)*365,'-or')
-plot(data.mo_ave_month, (data.flux_LS_corr_mo_ave/1000)*365,'-og')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LD_corr_mo_ave/1000)*365,'-or')
+plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_LS_corr_mo_ave/1000)*365,'-og')
 % plot(SOTS_float_data.mo_ave_month, (SOTS_float_data.flux_WD_corr_mo_ave/1000)*365,'--ok')
 shadedErrorBar([1:12],(monte_carlo_SOTS.raw.flux_LS_moav/1000)*365,...
     (monte_carlo_SOTS.simulation.flux_LS_moSD/1000)*365,'lineprops','g','patchSaturation',[0.05])

@@ -1,32 +1,150 @@
 %%%% for the CO2SYS functions I need nutrients, here I will extract them
 %%%% for the float profiles from WOA 2018
+clear all
 
-float_ID = '5906623' % SOTS float
-%float_ID = '5906624' %55S float
+% float_ID = '5906623' % SOTS float
+float_ID = '5906624' %55S float
 
-search_path = ['C:\Users\cawynn\cloudstor\Air sea flux manuscript\BGC_Argo\' float_ID];
-cd(search_path)
-% find the Sprof
-nc_files = dir('*.nc');
-file = [nc_files.folder '\' nc_files.name];
-
-% read necessary variables from float profile
-lat_float = ncread(file,'LATITUDE');
-lon_float = ncread(file,'LONGITUDE');
-time_float = ncread(file,'JULD')+ datetime(1950,1,1);
-month_float = month(time_float);
+if float_ID == '5906623'
+    load('SOTS_float_data.mat')
+    data=SOTS_float_data;
+elseif float_ID == '5906624'
+    load('S55_float_data.mat')
+    data=S55_float_data;
+end
 
 
-addpath 'C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper\nctoolbox-master\nctoolbox-master'
-addpath 'C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper\ocean_data_tools-master\ocean_data_tools-master\ocean_data_tools'
-setup_nctoolbox
+lat_range_float = [min(data.lat) max(data.lat)];
+lon_range_float = [min(data.lon) max(data.lon)];
+depth_range = [0 20];
 
-variable_list = {'silicate','phosphate'};
-time = '01';
-xcoords = lon_float;
-ycoords = lat_float;
-zgrid = 0.1;
+% get the monthly means
+variables ={'silicate','phosphate'};
+for l=1:length(variables)
+    file_path = ['C:\Users\cawynn\cloudstor\Air sea flux manuscript\WOA\' variables{l}];
+    cd(file_path)
+    files = dir('*.nc');
+    
+    if strcmp(variables{l},'silicate')==1
+        v='i';
+    elseif strcmp(variables{l},'phosphate')==1
+        v='p';
+    end
+    
+    for i=1:length(files)
+        % find the file of the month we are up to
+        if i<10
+            pat = [v '0' num2str(i)];
+        else
+            pat = [v num2str(i)];
+        end
+        
+%         if strcmp(variables{l},'silicate')==1
+%             if i<10
+%                 pat = [v '0' num2str(i)];
+%             else
+%                 pat = [v num2str(i)];
+%             end
+%         elseif strcmp(variables{l},'phosphate')==1
+%             if i<10
+%                 pat = ['p0' num2str(i)];
+%             else
+%                 pat = ['p' num2str(i)];
+%             end
+%         end
 
-[woa] =  woa_build_profiles(variable_list,time,xcoords,ycoords,zgrid); % zgrid optional, no interpolation if unspecified
+        for s=1:length(files)
+            p(s)=isempty(strfind(files(s).name,pat));
+        end
 
-%https://www.ncei.noaa.gov/thredds-ocean/fileServer/ncei/woa/silicate/all/1.00/woa18_all_i01_01.nc
+        f_idx = find(p==0);
+        
+        
+        file = [files(f_idx).folder '\' files(f_idx).name];
+        
+        
+        var_name = [v '_an'];
+        lat=ncread(file,'lat');
+        lon=ncread(file,'lon');
+        depth = ncread(file,'depth');
+        
+        idx_lon_1 = find(lon>lon_range_float(1),1);
+        idx_lon_2 = find(lon>lon_range_float(2),1);
+        
+        idx_lat_1 = find(lat>lat_range_float(1),1);
+        idx_lat_2 = find(lat>lat_range_float(2),1);
+        
+        depth_1 = find(depth>=depth_range(1),1);
+        depth_2 = find(depth>depth_range(2),1);
+        
+        var=ncread(file,var_name); % umol kg-1
+        
+        WOA_nut.(variables{l}).mo_mean(i) = mean(var([idx_lon_1:idx_lon_2],...
+            [idx_lat_1:idx_lat_2],[depth_1:depth_2]),'all','omitnan');
+
+        
+    end
+end 
+
+% get the annual mean
+variables ={'silicate','phosphate'};
+for l=1:length(variables)
+    file_path = ['C:\Users\cawynn\cloudstor\Air sea flux manuscript\WOA\' variables{l} '\annual_mean'];
+    cd(file_path)
+    
+    if strcmp(variables{l},'silicate')==1
+        v='i';
+    elseif strcmp(variables{l},'phosphate')==1
+        v='p';
+    end
+    files = dir(['*' v '00_01*.nc']);
+    file = [files.folder '\' files.name];
+         
+
+    var_name = [v '_an'];
+    lat=ncread(file,'lat');
+    lon=ncread(file,'lon');
+    depth = ncread(file,'depth');
+
+    idx_lon_1 = find(lon>lon_range_float(1),1);
+    idx_lon_2 = find(lon>lon_range_float(2),1);
+
+    idx_lat_1 = find(lat>lat_range_float(1),1);
+    idx_lat_2 = find(lat>lat_range_float(2),1);
+
+    depth_1 = find(depth>=depth_range(1),1);
+    depth_2 = find(depth>depth_range(2),1);
+
+    var=ncread(file,var_name); % umol kg-1
+
+    WOA_nut.(variables{l}).annual_mean = mean(var([idx_lon_1:idx_lon_2],...
+        [idx_lat_1:idx_lat_2],[depth_1:depth_2]),'all','omitnan');
+        
+end
+
+WOA_nut.lat_range = lat_range_float;
+WOA_nut.lon_range = lon_range_float;
+
+path='C:\Users\cawynn\cloudstor\Air sea flux manuscript\Matlab scripts\Argo-air-sea-flux-paper';
+cd(path)
+
+if float_ID == '5906623'
+    WOA_nut_SOTS = WOA_nut;
+    clearvars -except WOA_nut_SOTS
+    save('WOA_nut_SOTS.mat');
+elseif float_ID == '5906624'
+    WOA_nut_S55 = WOA_nut;
+    clearvars -except WOA_nut_S55
+    save('WOA_nut_S55.mat')
+end
+
+        
+% 
+% figure()
+% plot([1:12],WOA_nut_SOTS.silicate.mo_mean,'or')
+% hold on
+% plot([1:12],WOA_nut_SOTS.phosphate.mo_mean,'ob')
+% plot([1:12],WOA_nut_S55.silicate.mo_mean,'*r')
+% plot([1:12],WOA_nut_S55.phosphate.mo_mean,'*b')
+        
+        

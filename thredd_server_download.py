@@ -3,7 +3,7 @@ import shutil as shutil
 import os
 
 # open text file with SBE file names downloaded manually from AODN and manually trimmed to the files we want
-files = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/SOFS xCO2/' + 'IMOS_-_Deep_Water_Moorings_-_Southern_Ocean_Flux_Station_(SOFS)_-_Surface_fluxes_(real-time)_URLs_2022.txt'
+files = 'C:/Users/cawynn/cloudstor/Air sea flux manuscript/SOFS xCO2' + 'IMOS_-_Deep_Water_Moorings_-_Southern_Ocean_Flux_Station_(SOFS)_-_Surface_fluxes_(real-time)_URLs_2022.txt'
 
 netCDFfiles=[]
 with open(files, 'r') as f:

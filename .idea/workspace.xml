@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0d5399fd-13aa-46a5-bdf8-ac93279f6069" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Argo-air-sea-flux-paper.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Argo-air-sea-flux-paper.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CTD_data.mat" beforeDir="false" afterPath="$PROJECT_DIR$/CTD_data.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LIPHR.m" beforeDir="false" afterPath="$PROJECT_DIR$/LIPHR.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mooring_flux.m" beforeDir="false" afterPath="$PROJECT_DIR$/Mooring_flux.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OSM_2022_figures.m" beforeDir="false" afterPath="$PROJECT_DIR$/OSM_2022_figures.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/S55_float_data.mat" beforeDir="false" afterPath="$PROJECT_DIR$/S55_float_data.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SOTS_float_data.mat" beforeDir="false" afterPath="$PROJECT_DIR$/SOTS_float_data.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WOA_nuts.m" beforeDir="false" afterPath="$PROJECT_DIR$/WOA_nuts.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/air_sea_flux_plots.m" beforeDir="false" afterPath="$PROJECT_DIR$/air_sea_flux_plots.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/air_seaflux_floats.m" beforeDir="false" afterPath="$PROJECT_DIR$/air_seaflux_floats.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backup/SOTS_float_data.mat" beforeDir="false" afterPath="$PROJECT_DIR$/backup/SOTS_float_data.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/float_5904686_plots.m" beforeDir="false" afterPath="$PROJECT_DIR$/float_5904686_plots.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/float_pH_corr.m" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/float_plots.m" beforeDir="false" afterPath="$PROJECT_DIR$/float_plots.m" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mooring_data.mat" beforeDir="false" afterPath="$PROJECT_DIR$/mooring_data.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thredd_server_download.py" beforeDir="false" afterPath="$PROJECT_DIR$/thredd_server_download.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="26Re2jsUgbn3QEExcZcQELrOWtj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CTD_O2_climatology.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager">
+    <configuration name="CTD_O2_climatology.py" type="PythonConfigurationType" factoryName="Python">
+      <module name="Argo-air-sea-flux-paper" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CTD_O2_climatology.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0d5399fd-13aa-46a5-bdf8-ac93279f6069" name="Changes" comment="" />
+      <created>1647390620529</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1647390620529</updated>
+    </task>
+    <servers />
+  </component>
+</project>
